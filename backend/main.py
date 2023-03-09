@@ -164,8 +164,8 @@ async def return_props1(fname: str = ""):
  return(item)
 
 
-# endpoint nr. 4  uždavus failo vardą fname atiduoda originalų EKG įrašą
-
+# endpoint nr. 4  uždavus fname, at, length atiduoda originalaus EKG įrašo segmentą
+# Nenaudojamas
 class Value(BaseModel):
     value: float
 
@@ -180,7 +180,7 @@ class ItemValue(BaseModel):
 
 # @app.get("/values/", response_model=List[ItemValue])
 @app.get("/values/")
-async def return_props3(fname: str = "1633444.221", at: int = 0, length: int = 10):
+async def return_props3(fname: str = "1626931.201", at: int = 0, length: int = 10):
  fpath = Path(db_path, fname)   
  arr = zive_read_file_1ch(fpath)
  length_arr = len(arr)
@@ -197,11 +197,26 @@ async def return_props3(fname: str = "1633444.221", at: int = 0, length: int = 1
  return(items)
 
 
-# endpoint nr. 5 uždavus failo vardą fname atiduoda filtruotą EKG įrašą
+# endpoint nr. 5 uždavus failo vardą fname atiduoda originalų EKG įrašą
 
 # @app.get("/record/", response_model=List[ItemValue])
 @app.get("/record/")
-async def return_props3(fname: str = "1633444.221"):
+async def return_props3(fname: str = "1626931.201"):
+ fpath = Path(db_path, fname)   
+ arr = zive_read_file_1ch(fpath)
+ length_arr = len(arr)
+ print("fname:", fname)
+ list = [{'idx':i,'value':arr[i]} for i in range(0,length_arr-1)]
+ print("fpath:", fpath)
+ print("length:", len(list))
+ return(list)
+
+
+# endpoint nr. 6 uždavus failo vardą fname atiduoda filtruotą EKG įrašą
+
+# @app.get("/filtered/", response_model=List[ItemValue])
+@app.get("/filtered/")
+async def return_props3(fname: str = "1626931.201"):
  fpath = Path(db_path, fname)   
  arr = zive_read_file_1ch(fpath)
  length_arr = len(arr)
@@ -223,15 +238,7 @@ async def return_props3(fname: str = "1633444.221"):
  list = [{'idx':i,'value':sign_filt[i]} for i in range(0,length_arr-1)]
  return(list)
 
-# @app.get("/filtered/", response_model=List[ItemValue])
-@app.get("/filtered/")
-async def return_props3(fname: str = "1633444.221"):
- fpath = Path(db_path, fname)   
- arr = zive_read_file_1ch(fpath)
- length_arr = len(arr)
- print("fname:", fname)
- list = [{'idx':i,'value':2.*arr[i]} for i in range(0,length_arr-1)]
- return(list)
+
 
 
 # endpoint nr. 6 uždavus failo vardą fname atiduoda EKG rpeaks (rpeaks) su gydytojo anotacijomis (annot), 
