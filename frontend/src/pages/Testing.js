@@ -12,26 +12,53 @@ import { useRef, useEffect } from 'react';
 function Testing() {
   const auth = useContext(AuthContext);
 
+// EKG įrašo reikšmės, atsisiunčiama iš backend
  const data_orig = [  
-{idx: 0, value: 1.9661428050815055, rpeak: ''},
-{idx: 1, value: 1.948431710633961, rpeak: ''},
-{idx: 2, value: 1.9298691212610537, rpeak: ''},
-{idx: 3, value: 1.8826963023959589, rpeak: 'R'},
-{idx: 4, value: 1.8241134515310036, rpeak: ''},
-{idx: 5, value: 1.778643622516634, rpeak: 'R'},
-{idx: 6, value: 1.738623361024586, rpeak: ''},
-{idx: 7, value: 1.710183430517471, rpeak: 'R'},
-{idx: 8, value: 1.690769346219201, rpeak: ''},
-{idx: 9, value: 1.6488757958913551, rpeak: ''},
+  {idx: 0, value: 1.96},
+  {idx: 1, value: 1.94},
+  {idx: 2, value: 1.92},
+  {idx: 3, value: 1.88},
+  {idx: 4, value: 1.82},
+  {idx: 5, value: 1.77},
+  {idx: 6, value: 1.73},
+  {idx: 7, value: 1.71},
+  {idx: 8, value: 1.69},
+  {idx: 9, value: 1.64},
+ ];
+
+ const idxData = data_orig.map((data) => data.idx);
+ const valueData = data_orig.map((data) => data.value);
+ const data = [idxData, valueData];
+ console.log('cia data',data)
+ 
+// rpeaks vietos ir anotacijos iš json, atsisiunčiama iš backend
+// Vaizdavimas: 'R': case 'NW', annot: case 'SW'
+const data_annot = [
+  {idx: 2, annot: 'N'},
+  {idx: 3, annot: 'S'},
+  {idx: 5, annot: 'V'},
+  {idx: 8, annot: 'U'},
+];
+
+const idxAnnot = data_annot.map((data) => data.idx);
+const valueAnnot = data_annot.map((data) => data.value);
+const annot = [idxAnnot, valueAnnot];
+console.log('cia annot', annot)
+
+
+// rpeaks vietos ir ML anotacijos, atsisiunčiama iš backend
+// Vaizdavimas: ml: case 'NE'
+const data_ml = [
+  {idx: 2, ml: 'N'},
+  {idx: 5, ml: 'S'},
+  {idx: 8, ml: 'V'},
 ]
 
-const idxArray = data_orig.map((data) => data.idx);
-const valueArray = data_orig.map((data) => data.value);
-const rpeaksArray = data_orig.filter(({ rpeak }) => rpeak === 'R'
-);
-const data = [idxArray, valueArray];   
-console.log('cia data',data)
-console.log('cia rpeaksArray',rpeaksArray)
+const idxMl = data_ml.map((data) => data.idx);
+const valueMl = data_ml.map((data) => data.value);
+const ml = [idxMl, valueMl];
+console.log('cia ml', ml)
+
 
 const options = {
     width: 600,
