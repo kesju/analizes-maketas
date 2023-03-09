@@ -41,7 +41,7 @@ const data_annot = [
 ];
 
 const idxAnnot = data_annot.map((data) => data.idx);
-const valueAnnot = data_annot.map((data) => data.value);
+const valueAnnot = data_annot.map((data) => data.annot);
 const annot = [idxAnnot, valueAnnot];
 console.log('cia annot', annot)
 
@@ -55,7 +55,7 @@ const data_ml = [
 ]
 
 const idxMl = data_ml.map((data) => data.idx);
-const valueMl = data_ml.map((data) => data.value);
+const valueMl = data_ml.map((data) => data.ml);
 const ml = [idxMl, valueMl];
 console.log('cia ml', ml)
 
