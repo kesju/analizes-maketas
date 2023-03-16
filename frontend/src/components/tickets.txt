@@ -1,0 +1,2 @@
+padaryti menu ir page `rpeaks`, kuriame lygina anotuotą įrašą su rpeaks žymėmis su įrašu,
+kur rpeaks grynai automatiniai, rankinis taisymas padarytas nebuvo 

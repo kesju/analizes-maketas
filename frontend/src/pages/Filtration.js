@@ -263,7 +263,7 @@ const Filtration = () => {
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length} 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Filtras: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}Hz
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Viršuje po filtro: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}Hz
           <ShowGraph data={data_flt} options={options_flt} width={1200} height={300} />
           <ShowGraph data={data} options={options} width={1200} height={300} />
       

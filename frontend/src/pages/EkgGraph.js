@@ -32,7 +32,7 @@ ChartJS.register(
   Legend
 );
 
-const ShowGraph = ({data, options}) => {
+const ShowGraph = ({data, options, width, height}) => {
 
   const auth = useContext(AuthContext);
 
@@ -43,8 +43,7 @@ const ShowGraph = ({data, options}) => {
     } else { 
       return(
         <div>
-        <Line width={1200} height={400} options={options} data={data} />;
-        {/* <Line width={1200} height={400} options={options} data={data} />; */}
+        <Line width={width} height={height} options={options} data={data} />;
         </div>
       );
   } 
@@ -115,9 +114,9 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) =>
   // },
   scales: {
     x: {
-      // ticks: {  // Nuįma x ašies ticks
-      //   display: false
-      // },  
+      ticks: {  // Nuįma x ašies ticks
+        display: true
+      },  
     grid: {
       display: false
     },
@@ -241,7 +240,7 @@ const EkgGraph = () => {
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
-          <ShowGraph data={data} options={options}/>
+          <ShowGraph data={data} options={options} width={1200} height={500}/>
       
       </div>
     );
