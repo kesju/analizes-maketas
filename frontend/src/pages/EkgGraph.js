@@ -221,7 +221,7 @@ const EkgGraph = () => {
     console.log(idxVisualRpeaks);
   
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
-        .map((rpeak) => rpeak.annotationValue);
+    .map((rpeak) => rpeak.annotationValue);
     console.log(annotationVisualValues);
 
     const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);

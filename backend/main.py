@@ -53,10 +53,11 @@ db_folder = 'analizes-maketas'
 rec_folder = 'data'
 
 # Įrašo filtravimui
-fp = {  'method':'butterworth',
+fp = {  'type': 'lowcut',
+        'method':'butterworth',
         'order':5,
         'lowcut':0.5,
-         'highcut':20 }
+        'highcut':20 }
 
 
 
@@ -239,7 +240,7 @@ async def return_props3(fname: str = "1626931.201"):
 
  print(f"\nIšlyginta izolinija su {fp['method']}")
  # Žemų dažnumų filtras
- flt_param = f"method: {fp['method']} order: {fp['order']} lowcut: {fp['lowcut']}"
+ flt_param = f"type: {fp['type']} method: {fp['method']} order: {fp['order']} lowcut: {fp['lowcut'] }"
  sign_filt = signal_filter(signal=arr, sampling_rate=200, lowcut=fp['lowcut'], method=fp['method'], order=fp['order'])
 
 # Aukštų dažnumų filtras
@@ -251,18 +252,11 @@ async def return_props3(fname: str = "1626931.201"):
 # sign_filt = signal_filter(signal=sign_raw, sampling_rate=200, lowcut= fp['lowcut'], highcut=fp['highcut'], method=fp['method'], order=fp['order'])
 
  print("fname:", fname)
- flt_param = {
-    'method': fp['method'],
-    'order': fp['order'],
-    'lowcut': fp['lowcut']
- }
-#  list = [{'idx':i,'value':sign_filt[i]} for i in range(0,length_arr-1)]
- list = [{'idx':i,'value':sign_filt[i]} for i in range(0,100)]
+ list = [{'idx':i,'value':sign_filt[i]} for i in range(0,length_arr-1)]
+#  list = [{'idx':i,'value':sign_filt[i]} for i in range(0,100)]
 
 #  print({'flt_param':flt_param}, {'values':list})
- return({'flt_param':flt_param, 'values':list})
-
-
+ return({'flt_param':fp, 'values':list})
 
 
 # endpoint nr. 6 uždavus failo vardą fname atiduoda EKG rpeaks (rpeaks) su gydytojo anotacijomis (annot), 

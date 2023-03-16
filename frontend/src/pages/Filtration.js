@@ -32,7 +32,7 @@ ChartJS.register(
   Legend
 );
 
-const ShowGraph = ({data, options}) => {
+const ShowGraph = ({data, options, width, height}) => {
 
   const auth = useContext(AuthContext);
 
@@ -43,13 +43,11 @@ const ShowGraph = ({data, options}) => {
     } else { 
       return(
         <div>
-        <Line width={1200} height={400} options={options} data={data} />;
-        {/* <Line width={1200} height={400} options={options} data={data} />; */}
+        <Line width={width} height={height} options={options} data={data} />;
         </div>
       );
   } 
 }
-
 
 
 const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) => {
@@ -115,9 +113,9 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) =>
   // },
   scales: {
     x: {
-      // ticks: {  // Nuįma x ašies ticks
-      //   display: false
-      // },  
+      ticks: {  // Nuįma x ašies ticks
+        display: false
+      },  
     grid: {
       display: false
     },
@@ -222,16 +220,18 @@ const Filtration = () => {
   if (loaded_rec && loaded_flt && loaded_js) {
     
 
-    console.log("filtered.flt_param", filtered.flt_param);
-    console.log("filtered.values", filtered.values);
+    console.log("filtered.flt_param:", filtered.flt_param);
+    console.log("filtered.values:", filtered.values);
+    console.log("data_rec:", data_rec);
+    console.log("annot_js.rpeaks:", annot_js.rpeaks);
 
     const segmentData = data_rec.slice(param.at, param.at + param.length);
-    // console.log("segmentData:", segmentData)
+    console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
 
     const segmentDataFlt = filtered.values.slice(param.at, param.at + param.length);
-    // console.log("segmentData:", segmentData)
+    console.log("segmentDataFlt:", segmentDataFlt)
     const idxVisualArrayFlt = segmentDataFlt.map((data) => data.idx);
     const valueVisualArrayFlt = segmentDataFlt.map((data) => data.value);
 
@@ -240,12 +240,14 @@ const Filtration = () => {
     console.log('idxVisualRpeaks:', idxVisualRpeaks);
   
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
-        .map((rpeak) => rpeak.annotationValue);
+    .map((rpeak) => rpeak.annotationValue);
     console.log('annotationVisualValues:', annotationVisualValues);
 
-    // const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);
-    const {data_flt, options_flt} = GenerateChartData(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks, annotationVisualValues);
-    
+    const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);
+    const {data: data_flt, options: options_flt} = GenerateChartData(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks, annotationVisualValues);
+    options_flt.scales.x.ticks.display = true;
+    // options_flt.scales.x.ticks.display = false;
+
     return (
       // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
       <div onKeyDown={handleKeyDown} tabIndex="0" >
@@ -260,9 +262,10 @@ const Filtration = () => {
             length:
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length}  
-          <ShowGraph data={data_flt} options={options_flt}/>
-          {/* <ShowGraph data={data} options={options}/> */}
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length} 
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Filtras: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}Hz
+          <ShowGraph data={data_flt} options={options_flt} width={1200} height={300} />
+          <ShowGraph data={data} options={options} width={1200} height={300} />
       
       </div>
     );
