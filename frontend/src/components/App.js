@@ -48,9 +48,11 @@ function ControlledSelectionGrid({ setAuth }) {
       { field: 'col2', headerName: 'file_name', width: 150 },
       { field: 'col3', headerName: 'recordingId', width: 250 },
       { field: 'col4', headerName: 'userId', width: 250 },
-      { field: 'col5', headerName: 'incl', width: 50 },
-      { field: 'col6', headerName: 'flag', width: 50 },
-      { field: 'col7', headerName: 'comment', width: 250 },
+      { field: 'col5', headerName: 'S', width: 50 },
+      { field: 'col6', headerName: 'V', width: 50 },
+      { field: 'col7', headerName: 'incl', width: 50 },
+      { field: 'col8', headerName: 'flag', width: 50 },
+      { field: 'col9', headerName: 'comment', width: 250 },
     ];
 
   const rows = arr.map((item, index) => ({
@@ -59,11 +61,13 @@ function ControlledSelectionGrid({ setAuth }) {
            col2: item.file_name,
            col3: item.recordingId,
            col4: item.userId,
-           col5: item.incl,
-           col6: item.flag,
-           col7: item.comment,
+           col5: item.S,
+           col6: item.V,
+           col7: item.incl,
+           col8: item.flag,
+           col9: item.comment,
   }))
-  // console.log(rows)
+  console.log(rows)
 
   const [selectedRows, setSelectedRows] = useState([]);
   
@@ -110,7 +114,7 @@ function App() {
         <Routes>
           <Route path="/" element={ <ControlledSelectionGrid setAuth={changeAuth}/> } />
           <Route path="ekggraph" element={ <EkgGraph/> } />
-          <Route path="ekgprops" element={ <EkgPrm/> } />
+          <Route path="ekgprm" element={ <EkgPrm/> } />
           <Route path="ekgvalues" element={ <EkgVal/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />

@@ -24,15 +24,22 @@ def add_comments(df_list, df_comments):
     merged = pd.merge(df_list, df_comments, on='file_name', how='left')
     # print("\n",merged)
 
-    # # fill missing values with corresponding value from the other column
+    # fill missing values with corresponding value from the other column
     merged['incl_x'] = merged['incl_y'].fillna(merged['incl_x'])
     merged = merged.drop(columns=['incl_y'])
 
-    # # fill missing values with corresponding value from the other column
+    # fill missing values with corresponding value from the other column
+    merged['S_x'] = merged['S_y'].fillna(merged['S_x'])
+    merged = merged.drop(columns=['S_y'])
+    
+    # fill missing values with corresponding value from the other column
+    merged['V_x'] = merged['V_y'].fillna(merged['V_x'])
+    merged = merged.drop(columns=['V_y'])
+
+    # fill missing values with corresponding value from the other column
     merged['flag_x'] = merged['flag_y'].fillna(merged['flag_x'])
     merged = merged.drop(columns=['flag_y'])
-
-# # fill missing values with corresponding value from the other column
+    # fill missing values with corresponding value from the other column
     merged['comment_x'] = merged['comment_y'].fillna(merged['comment_x'])
     merged = merged.drop(columns=['comment_y'])
 
@@ -112,6 +119,8 @@ def collect_list(db_path):
     dtypes = {
         'incl': int,
         'flag': int,
+        'S': int,
+        'V': int,
         'comment': str }
 
     file_path = Path(db_path, 'comments.csv')

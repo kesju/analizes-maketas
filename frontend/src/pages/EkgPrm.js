@@ -1,10 +1,10 @@
 //  Parodo pagrindinę informaciją apie ekstrasistoles (iš json)
 
-import {useEffect, useState, useContext, React} from 'react';
-import AuthContext from '../components/AuthContext'
-import axios from "axios";
+import {useContext, React} from 'react';
+import AuthContext from '../components/AuthContext';
+import useAxiosGet from "../components/useAxiosGet";
 
-const ShowPrm = (prm) => {
+const ShowPrm = ({prm}) => {
     const auth = useContext(AuthContext);
 
     if (auth === '9999999.999') { 
@@ -12,10 +12,6 @@ const ShowPrm = (prm) => {
         <h1>Pasirink įrašą!</h1>
       ); 
     } else { 
-      // const datetime_at = prm.recorded_at;
-      // const date_at = datetime_at.slice(0, 10);
-      // console.log("date_at:", date_at)
-
       return(
         <ul>
            <h1>Ekg parametrai:</h1>
@@ -32,44 +28,68 @@ const ShowPrm = (prm) => {
         </ul>
         );
       } 
+}
+
+function MyAnnotations(props) {
+  const {annotation, data } = props;
+  
+  if (data.length === 0) {
+    return <div>&nbsp;{annotation}: nėra</div>;
   }
 
-const fetchRecordPrm = async (id) => {
-  try {
-    const { data } = await axios.get(`http://localhost:8000/ekgprm/${id}`);
-      return { status: "success", response: data };
-    } catch (error) {
-      return { status: "failure", response: error };
-    }
-};
+  return (
+    <div>
+      <span>&nbsp;{annotation}: </span>
+      {data.map(({sampleIndex, annotationValue}) => (
+        <span key={sampleIndex}>{`${sampleIndex},  `}</span>
+      ))}
+    </div>
+  );
+}
+
 
 const EkgPrm = () => {
     const auth = useContext(AuthContext);
 
-    const [prm, setPrm] = useState({});
-    const [error, setError] = useState("");
-    
-    useEffect(() => {
-      const fetchData = async () => {
-        const { status, response } = await fetchRecordPrm(auth);
-        if (status === "success") {
-          setPrm(response);
-          console.log('cia response',response)
-          // console.log('cia auth',auth)
-        } else if (status === "failure") {
-          setError("Failed to fetch data!");
-        }
-      };
-      fetchData();
-    }, [auth]);
-    // console.log('cia error',error)
+    // const [prm, setPrm] = useState({});
+    // const [error, setError] = useState("");
 
-    return(
-      <div>
-        {/* <h1>{prm.userId}</h1> */}
-        {ShowPrm(prm)} 
-     </div>
-    )
+    const { data: data_prm, error: error_prm, loaded: loaded_prm } = useAxiosGet(
+      "http://localhost:8000/ekgprm",
+            {
+              params: {
+                fname:auth,
+              }
+            }
+    );
+            
+    const { data: annot_js, error: error_js, loaded: loaded_js } = useAxiosGet(
+      "http://localhost:8000/annotations",
+              {
+                params: {
+                  fname:auth,
+                }
+              }
+    );
+  
+
+    if (loaded_prm && loaded_js) {
+    
+      const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
+      const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V');
+      console.log('sElements:',sElements)
+      console.log('vElements:',vElements)
+      
+      return(
+        <div>
+            {/* <h1>{data_prm.userId}</h1> */}
+            <ShowPrm prm = {data_prm} /> 
+            <MyAnnotations annotation= 'S' data={sElements} />
+            <MyAnnotations annotation= 'V' data={vElements} />
+        </div>
+        );
+      }
+    return <span>Loading...</span>;
 }
 
 export default EkgPrm;

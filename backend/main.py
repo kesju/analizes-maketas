@@ -102,7 +102,7 @@ app.add_middleware(
 )
 
 # endpoint nr. 1: atiduoda visą EKG sąrašą su keys esančiais parametrais
-keys = ["file_name","userId", "recordingId", "incl", "flag", "comment"]                                                                                                                                                                              
+keys = ["file_name","userId", "recordingId",  "S", "V", "incl", "flag", "comment"]                                                                                                                                                                              
 items = []                                                                                                                                                                                            
 
 for row in ekg_list: 
@@ -110,15 +110,17 @@ for row in ekg_list:
    items.append(result)
 # print(items)
 
-for row in items:
-    item = {"userId": row["userId"]}
-    # print(item)
-    # 	print(row)    
+# for row in items:
+#     item = {"userId": row["userId"]}
+#     print(item)
+#     print(row)    
 
 class Item(BaseModel):
     file_name: str
     userId: str
     recordingId: str
+    S: int
+    V: int
     incl: int
     flag: int
     comment: str
@@ -143,10 +145,11 @@ class ItemProps(BaseModel):
 
 # endpoint nr. 2 paduoda uždavus failo vardą fname atiduoda iš sąrašo visus EKG parametrus
 # @app.get("/ekgprm/{fname}", response_model=List[ItemProps])
-@app.get("/ekgprm/{fname}")
-async def read_props(fname: str = ""): 
+@app.get("/ekgprm/")
+async def return_props(fname: str = "1626931.201"):
  Props = [d for d in ekg_list if d['file_name']==fname]
  item = Props[0]
+ print("app.get('/ekgprm/{fname}')")
 #  print(item)
  return item
 
@@ -206,10 +209,23 @@ async def return_props3(fname: str = "1626931.201"):
  arr = zive_read_file_1ch(fpath)
  length_arr = len(arr)
  print("fname:", fname)
- list = [{'idx':i,'value':arr[i]} for i in range(0,length_arr-1)]
+ list = [{'idx':i,'value':arr[i]} for i in range(0, length_arr-1)]
  print("fpath:", fpath)
  print("length:", len(list))
  return(list)
+
+# endpoint nr. 5.1 uždavus failo vardą fname atiduoda EKG įrašo json su gydytojo
+# pūpsnių revizuotomis anotacijomis ir rankinėmis triukšmų  žymėmis  
+
+# @app.get("/record/", response_model=List[ItemValue])
+@app.get("/annotations/")
+async def return_props3(fname: str = "1626931.201"):
+ fname = fname + '.json';
+ fpath = Path(db_path, fname)
+ with open(fpath) as f:
+    annot_js = json.load(f)
+ return(annot_js)   
+ 
 
 
 # endpoint nr. 6 uždavus failo vardą fname atiduoda filtruotą EKG įrašą
@@ -235,18 +251,37 @@ async def return_props3(fname: str = "1626931.201"):
 # sign_filt = signal_filter(signal=sign_raw, sampling_rate=200, lowcut= fp['lowcut'], highcut=fp['highcut'], method=fp['method'], order=fp['order'])
 
  print("fname:", fname)
- list = [{'idx':i,'value':sign_filt[i]} for i in range(0,length_arr-1)]
- return(list)
+ flt_param = {
+    'method': fp['method'],
+    'order': fp['order'],
+    'lowcut': fp['lowcut']
+ }
+#  list = [{'idx':i,'value':sign_filt[i]} for i in range(0,length_arr-1)]
+ list = [{'idx':i,'value':sign_filt[i]} for i in range(0,100)]
+
+#  print({'flt_param':flt_param}, {'values':list})
+ return({'flt_param':flt_param, 'values':list})
 
 
 
 
 # endpoint nr. 6 uždavus failo vardą fname atiduoda EKG rpeaks (rpeaks) su gydytojo anotacijomis (annot), 
-# ML anotacijomis (ml), triukšmų žymėmis (noise)
+# ML anotacijomis (ml), triukšmų žymėmis (noise) : json pavidalu
 
 # Laikinai įdėsiu tik EKG rpeaks, naudosiu Neurokit
 
-# @app.get("/rpeaks/")
+@app.get("/analysis/")
+async def return_json(fname: str = "1626931.201"):
+#  1642627.410_rpeaks.json
+ with open('1642627.410_rpeaks.json') as f:
+    data_js = json.load(f)
+    # data_js = {
+    #     "name": "John",
+    #     "age": 30,
+    #     "city": "New York"
+    # };
+ return(data_js)
+
 # async def return_props3(fname: str = "1633444.221"):
 #  fpath = Path(db_path, fname)   
 #  arr = zive_read_file_1ch(fpath)

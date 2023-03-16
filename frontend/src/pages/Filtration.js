@@ -1,15 +1,38 @@
+// Čia išveda originalaus EKG įrašo grafiką
 
-// Čia išveda 2 EKG grafikus - prieš ir po filtravimo
-
-import {useEffect, useState, useContext, React} from 'react';
+import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
-import UPlotReact from 'uplot-react';
-import 'uplot/dist/uPlot.min.css';
-import './MyChart.css';
-import 'uplot/dist/uPlot.min.css';
-import axios from "axios";
+// import './MyChart.css';
+import "chartjs-plugin-annotation";
+import useAxiosGet from "../components/useAxiosGet"
 
-const ShowGraph = ({data, options, className}) => {
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+import { Line } from 'react-chartjs-2';
+import annotationPlugin from 'chartjs-plugin-annotation';
+// import { red, yellow } from '@mui/material/colors';
+
+ChartJS.register(
+  annotationPlugin,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+const ShowGraph = ({data, options}) => {
 
   const auth = useContext(AuthContext);
 
@@ -18,109 +41,175 @@ const ShowGraph = ({data, options, className}) => {
         <h1>Pasirink įrašą!</h1>
       ); 
     } else { 
-
-    return(
-      // <div>
-        <UPlotReact data={data} options={options} className={className}/>
-      // </div>
-    );
+      return(
+        <div>
+        <Line width={1200} height={400} options={options} data={data} />;
+        {/* <Line width={1200} height={400} options={options} data={data} />; */}
+        </div>
+      );
   } 
 }
 
-const fetchRecord = async (auth) => {
-try {
-  const { data } = await axios.get(
-    "http://localhost:8000/record",
-    {
-      params: {
-        fname:auth,
-      }
-    }
-  );
-  console.log("cia record", data)
-  return { status: "success", response: data };    
-  } catch (error) {
-  return { status: "failure", response: error };
+
+
+const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) => {
+
+  const data = {
+    labels: idxArray,
+    datasets: [{
+    label: 'EKG reikšmės',
+    fill: false,
+    lineTension: 0.1,
+    borderColor: 'blue',
+    borderWidth: 1, // <--- Line thickness is defined here
+    pointRadius: 0, // <--- Set to 0 to remove markers
+    data: valueArray,
+  }]
+  };      
+
+  const valueRpeaks = [];
+  for (let i = 0; i < idxRpeaks.length; i++) {  
+    valueRpeaks.push(valueArray[idxRpeaks[i]]);        
   }
-};
 
+  const annotations1 = [];
+  const annotations2 = [];
 
-const fetchFiltered = async (auth) => {
-  try {
-    const { data } = await axios.get(
-      "http://localhost:8000/filtered",
-      {
-        params: {
-          fname:auth,
-        }
+  for (let i = 0; i < idxRpeaks.length; i++) {
+  const point = {
+    type: 'point',
+    xValue: idxRpeaks[i],
+    yValue: valueRpeaks[i],
+    radius: 2,
+    pointStyle: 'circle',
+  };
+  annotations1.push(point);
+  if (annotationValues[i] !== 'N') {
+      const point2 = {
+            type: 'label',
+            xValue: idxRpeaks[i],
+            yValue: valueRpeaks[i],
+            enabled: true,
+            xAdjust: -10, // pixels
+            yAdjust: -10, // pixels
+            content: [annotationValues[i]],
+            font: {
+              size: 14,
+              color: 'red', // set the font color of the label here
+            },
+      };
+      annotations2.push(point2);
+    };
+  }
+  const annotations = annotations1.concat(annotations2);
+
+  const options = {
+  responsive: false,
+  maintainAspectRatio: true,
+  animation: false, // <--- disable animation
+  // legend: {   neveikia
+  //   display: false //This will do the task
+  // },
+  // colors: { neveikia
+  //   forceOverride: true
+  // },
+  scales: {
+    x: {
+      // ticks: {  // Nuįma x ašies ticks
+      //   display: false
+      // },  
+    grid: {
+      display: false
+    },
+    //   ticks: {
+    //     stepSize: 5
+    },
+    //   // autoSkip: true, // <--- enable auto-skipping of labels
+    //   maxTicksLimit: 50, // <--- maximum number of labels to show
+    // },
+    y: {
+      type: 'linear',
+      grace: '10%'
+        // max: 5,
+        // min: 0,
+        // ticks: {
+        //     stepSize: 0.1
+        // }
+    }
+  },  
+  plugins: {
+    legend: {
+      display: false
+    },
+    // legend: {
+    //   position: 'top',
+    // },
+    // title: {
+    //   display: true,
+    // },
+    annotation: {
+      annotations: annotations
       }
-    );
-    console.log("cia filtered",data)
-    return { status_f: "success", response_f: data };    
-    } catch (error) {
-    return { status_f: "failure", response_f: error };
     }
   };
-
+  return {data, options}
+}
 
 const Filtration = () => {
 
   const auth = useContext(AuthContext);
-  const [chartData, setChartData] = useState([]);
-  const [chartFiltr, setChartFiltr] = useState([]);
-  const [record, setRecord] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [error, setError] = useState("");
+  // const auth = "1642627.410";
+  console.log(auth)
+
   const [param, setParam] = useState({
     at: 0,
     length: 1000,
   })
+  
+  const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
+    "http://localhost:8000/record",
+          {
+            params: {
+              fname:auth,
+            }
+          }
+  );
 
-  const fetchData = async (auth) => {
-    const {status, response } = await fetchRecord(auth);
-    if (status === "success") {
-      setRecord(response);
-      console.log('cia record', response)
-    } else if (status === "failure") {
-      setError("Failed to fetch data!");
-    }
-    const {status_f, response_f } = await fetchFiltered(auth);
-    if (status_f === "success") {
-      setFiltered(response_f);
-      console.log('cia filtered', response_f)
-    } else if (status_f === "failure") {
-      setError("Failed to fetch data!");
-    }
-  };
+  const { data: filtered, error: error_flt, loaded: loaded_flt } = useAxiosGet(
+    "http://localhost:8000/filtered",
+          {
+            params: {
+              fname:auth,
+            }
+          }
+  );
+          
+  const { data: annot_js, error: error_js, loaded: loaded_js } = useAxiosGet(
+    "http://localhost:8000/annotations",
+            {
+              params: {
+                fname:auth,
+              }
+            }
+  );
 
-   function handleInputChange(event) {
+  function handleInputChange(event) {
     const { name, value } = event.target;
-    // let step = Math.max(1, Math.floor(param.length / 10));
     setParam({ ...param, [name]: parseInt(value) }); // include atStep in updated state
   }
-
-  useEffect(() => {
-    async function getData() {
-      await fetchData(auth);
-    }
-    getData();
-  }, [auth]);
-
-
-  
   
   function handleKeyDown(event) {
     const step = Math.max(1, Math.floor(param.length / 10));
-
+    
     switch (event.keyCode) {
       case 37: // left arrow key
       setParam({ ...param, at: (param.at - step) >= 0 ? param.at - step : 0});
       break;
       case 38: // up arrow key
-      setParam({ ...param, length: (param.length + 100) <= record.length ? param.length + 100 : record.length });
+      setParam({ ...param, length: (param.length + 100) <= data_rec.length ? param.length + 100 : data_rec.length });
       break;
       case 39: // right arrow key
-      setParam({ ...param, at: (param.at + step) <= record.length ? param.at + step : param.at });
+      setParam({ ...param, at: (param.at + step) <= data_rec.length ? param.at + step : param.at });
       break;
       case 40: // down arrow key
       setParam({ ...param, length: Math.max(param.length - 100, 100) });
@@ -129,70 +218,57 @@ const Filtration = () => {
         break;
       }
     }
+  
+  if (loaded_rec && loaded_flt && loaded_js) {
     
-  const options = {
-    width: 1400,
-    height: 300,
-    series: [
-      {},
-      {
-        label: 'Values',
-        stroke: 'blue',
-      },
-  ],
-    scales: {
-      x: {
-        time: false,
-      },
-    },
-  };
 
-  useEffect(() => {
-    const generateChartData = () => {
-      const segmentData = record.slice(param.at, param.at + param.length);
-      const idxArray = segmentData.map((data) => data.idx);
-      const valueArray = segmentData.map((data) => data.value);
-      const chartData = [idxArray, valueArray]; 
-      setChartData(chartData);
-    };  
-    generateChartData();
-  }, [record, param]);
+    console.log("filtered.flt_param", filtered.flt_param);
+    console.log("filtered.values", filtered.values);
 
-  useEffect(() => {
-    const generateChartFiltr = () => {
-      const segmentFiltr = filtered.slice(param.at, param.at + param.length);
-      const idxArray = segmentFiltr.map((data) => data.idx);
-      const valueArray = segmentFiltr.map((data) => data.value);
-      const chartFiltr = [idxArray, valueArray]; 
-      setChartFiltr(chartFiltr);
-    };  
-    generateChartFiltr();
-  }, [filtered, param]);
+    const segmentData = data_rec.slice(param.at, param.at + param.length);
+    // console.log("segmentData:", segmentData)
+    const idxVisualArray = segmentData.map((data) => data.idx);
+    const valueVisualArray = segmentData.map((data) => data.value);
 
-  return (
-    // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
-    <div onKeyDown={handleKeyDown} tabIndex="0" >
+    const segmentDataFlt = filtered.values.slice(param.at, param.at + param.length);
+    // console.log("segmentData:", segmentData)
+    const idxVisualArrayFlt = segmentDataFlt.map((data) => data.idx);
+    const valueVisualArrayFlt = segmentDataFlt.map((data) => data.value);
+
+    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    .map((rpeak) => rpeak.sampleIndex - param.at);
+    console.log('idxVisualRpeaks:', idxVisualRpeaks);
+  
+    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+        .map((rpeak) => rpeak.annotationValue);
+    console.log('annotationVisualValues:', annotationVisualValues);
+
+    // const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);
+    const {data_flt, options_flt} = GenerateChartData(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks, annotationVisualValues);
+    
+    return (
+      // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
+      <div onKeyDown={handleKeyDown} tabIndex="0" >
+        
+        {/* <form> */}
+          <label>
+            at:
+            <input type="number" name="at" value={param.at} onChange={handleInputChange} />
+          </label>
+          {/* <br /> */}
+          <label>
+            length:
+            <input type="number" name="length" value={param.length} onChange={handleInputChange} />
+          </label>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length}  
+          <ShowGraph data={data_flt} options={options_flt}/>
+          {/* <ShowGraph data={data} options={options}/> */}
       
-      {/* <form> */}
-        <label>
-          at:
-          {/* <input type="number" name="at" value={param.at} onChange={handleInputChange} /> */}
-          <input type="number" name="at" value={param.at} onChange={handleInputChange} />
-        </label>
-        {/* <br /> */}
-        <label>
-          length:
-          <input type="number" name="length" value={param.length} onChange={handleInputChange} />
-        </label>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {record.length}  
-      {/* </form> */}
-      {/* <br /> */}
-      <ShowGraph data={chartData} options={options} className={"my-chart"}/>
-      <ShowGraph data={chartFiltr} options={options} className={"my-chart"}/>
-    </div>
-  );
-}
+      </div>
+    );
+  }
+    
+  return <span>Loading...</span>;
+};
 
 export default Filtration
-
-
