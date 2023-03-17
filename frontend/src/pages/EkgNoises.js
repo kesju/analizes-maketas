@@ -2,7 +2,7 @@
 
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
-// import './MyChart.css';
+import './MyChart.css';
 import "chartjs-plugin-annotation";
 import useAxiosGet from "../components/useAxiosGet"
 
@@ -42,6 +42,7 @@ const ShowGraph = ({data, options, width, height}) => {
       ); 
     } else { 
       return(
+        // <div className="my-chart-container">
         <div>
         <Line width={width} height={height} options={options} data={data} />;
         </div>
@@ -51,12 +52,12 @@ const ShowGraph = ({data, options, width, height}) => {
 
 
 
-const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues, noiseIntervals) => {
+const GenerateChartConfig = (idxArray, valueArray, idxRpeaks, annotationValues, noiseIntervals) => {
 
   const data = {
     labels: idxArray,
     datasets: [{
-    label: 'EKG reikšmės',
+    // label: 'įrašas nefiltruotas',
     fill: false,
     lineTension: 0.1,
     borderColor: 'blue',
@@ -71,8 +72,7 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues, no
     valueRpeaks.push(valueArray[idxRpeaks[i]]);        
   }
 
-  const annotations_point = [];
-  const annotations_label = [];
+  const annotations = [];
 
   for (let i = 0; i < idxRpeaks.length; i++) {
   const point = {
@@ -82,7 +82,8 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues, no
     radius: 2,
     pointStyle: 'circle',
   };
-  annotations_point.push(point);
+  annotations.push(point);
+
   if (annotationValues[i] !== 'N') {
       const point2 = {
             type: 'label',
@@ -97,78 +98,90 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues, no
               color: 'red', // set the font color of the label here
             },
       };
-      annotations_label.push(point2);
+      annotations.push(point2);
     };
   }
 
-  // eisime per idxRpeaks ir surasime box pradžias xMin[i] ir pabaigas xMax[i]
-  //po to eisime per visus box ir konstruosime box objektus
-  
-  
-  const annotations_box = [];
-  for (let i = 0; i < idxRpeaks.length; i++) {
-    const box = {
-      type: 'box',
-      xScaleID: 'x-axis-0',
-      yScaleID: 'y-axis-0',
-      xMin: 0,
-      xMax: 5,
-      backgroundColor: 'rgba(255, 0, 0, 0.2)'
-    }
-    annotations_box.push(box);  
-  }
-
-  const annotations = annotations_point.concat(annotations_label);
-
   const options = {
-  responsive: false,
-  maintainAspectRatio: true,
-  animation: false, // <--- disable animation
-  // legend: {   neveikia
-  //   display: false //This will do the task
-  // },
-  // colors: { neveikia
-  //   forceOverride: true
-  // },
-  scales: {
-    x: {
-      ticks: {  // Nuįma x ašies ticks
-        display: true
-      },  
-    grid: {
-      display: false
-    },
-    //   ticks: {
-    //     stepSize: 5
-    },
-    //   // autoSkip: true, // <--- enable auto-skipping of labels
-    //   maxTicksLimit: 50, // <--- maximum number of labels to show
+    responsive: false,
+    maintainAspectRatio: true,
+    animation: false, // <--- disable animation
+    // legend: {   neveikia
+    //   display: false //This will do the task
     // },
-    y: {
-      type: 'linear',
-      grace: '10%'
-        // max: 5,
-        // min: 0,
-        // ticks: {
-        //     stepSize: 0.1
-        // }
-    }
-  },  
-  plugins: {
-    legend: {
-      display: false
-    },
-    // legend: {
-    //   position: 'top',
+    // colors: { neveikia
+    //   forceOverride: true
     // },
     // title: {
     //   display: true,
+    //   text: 'My Chart Title',
+    //   fontSize: 18,
+    //   fontColor: '#333',
+    //   fontFamily: 'Arial, sans-serif',
+    //   padding: 10,
+    //   position: 'top',
     // },
-    annotation: {
-      annotations: annotations
+    // legend: {
+    //   labels: {
+    //     // fontColor: 'black',
+    //     // fontSize: 14,
+    //     // fontStyle: 'bold',
+    //     // usePointStyle: false,
+    //     boxWidth: 0,
+    //   }
+    // },
+    scales: {
+      x: {
+        ticks: {  // Nuįma x ašies ticks
+          display: true
+        },  
+      grid: {
+        display: false
+      },
+      //   ticks: {
+      //     stepSize: 5
+      },
+      //   // autoSkip: true, // <--- enable auto-skipping of labels
+      //   maxTicksLimit: 50, // <--- maximum number of labels to show
+      // },
+      y: {
+        type: 'linear',
+        grace: '10%'
+          // max: 5,
+          // min: 0,
+          // ticks: {
+          //     stepSize: 0.1
+          // }
+
       }
+    },  
+    plugins: {
+      legend: {
+        display: false,
+      //   position: 'top',
+      },
+      title: {
+        display: true,
+      },
     }
   };
+
+  const yScaleConfig = options.scales.y;
+
+  for (let i = 0; i < noiseIntervals.length; i++) {
+    const box = {
+      type: 'box',
+      xMin: noiseIntervals[i].startIndex,
+      xMax: noiseIntervals[i].endIndex,
+      yMin: yScaleConfig.min,
+      yMax: yScaleConfig.max,
+      backgroundColor: 'rgba(255, 0, 0, 0.2)'
+    }
+    annotations.push(box);  
+  }
+
+  options.plugins.annotation = {annotations:annotations};
+
   return {data, options}
 }
 
@@ -241,7 +254,87 @@ const EkgNoises = () => {
     .map((rpeak) => rpeak.annotationValue);
     console.log(annotationVisualValues);
 
-    const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);
+    // const noiseAnnotations = [
+    //   {startIndex: 10, endIndex: 100},
+    //   {startIndex: 510, endIndex: 600}
+    // ];
+
+  //   const noises = [
+  //     {
+  //         startIndex: 100,
+  //         endIndex: 500
+  //     },
+  //     {
+  //         startIndex: 600,
+  //         endIndex: 700
+  //     },
+  //     {
+  //         startIndex: 1200,
+  //         endIndex: 1300
+  //     },
+  //     {
+  //         startIndex: 1800,
+  //         endIndex: 2400
+  //     },
+  //     {
+  //         startIndex: 86698,
+  //         endIndex: 96259
+  //     }
+  // ];
+
+  const noises = annot_js.noises
+  const noiseAnnotations = [];
+
+  for (let i = 0; i < noises.length; i++) {
+    const startIdx = noises[i].startIndex;
+    const endIdx = noises[i].endIndex;
+
+    // Case 1: Noise object overlaps with all specified range
+    if (startIdx <= param.at && endIdx >= param.at + param.length) {
+      noiseAnnotations.push({
+        startIndex: param.at,
+        endIndex: param.at + param.length
+      });
+      break;
+    }
+
+    // Case 2: Noise object end is greater than param.at+param.length but start is less than param.at+param.length
+    if (endIdx > param.at + param.length && startIdx < param.at + param.length) {
+      noiseAnnotations.push({
+        startIndex: Math.max(startIdx, param.at),
+        endIndex: param.at + param.length
+      });
+    }
+
+    // Case 3: Noise object end is greater than param.at but start is less than param.at
+    if (endIdx > param.at && startIdx < param.at) {
+      noiseAnnotations.push({
+        startIndex: param.at,
+        endIndex: Math.min(endIdx, param.at + param.length)
+      });
+    }
+
+    // Case 4: Noise object start is greater than param.at and end is less than param.at+param.length
+    if (startIdx >= param.at && endIdx <= param.at + param.length) {
+      noiseAnnotations.push({
+        startIndex: startIdx,
+        endIndex: endIdx
+      });
+    }
+  }
+
+  const noiseVisualAnnotations = noiseAnnotations.map((annotation) => {
+    return {
+      startIndex: annotation.startIndex - param.at,
+      endIndex: annotation.endIndex - param.at
+    };
+  });
+
+  console.log(param.at, param.length)
+  console.log('noiseAnnotations:', noiseAnnotations)
+
+    const {data, options} = GenerateChartConfig(idxVisualArray, valueVisualArray,
+       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
     
     return (
       // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
@@ -258,7 +351,7 @@ const EkgNoises = () => {
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
-          <ShowGraph data={data} options={options} width={1200} height={500}/>
+          <ShowGraph data={data} options={options} width={1200} height={400}/>
       
       </div>
     );
