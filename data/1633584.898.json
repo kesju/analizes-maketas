@@ -7,20 +7,64 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 8011
+            "startIndex": 1857,
+            "endIndex": 2945
         },
         {
-            "startIndex": 52253,
-            "endIndex": 68123
+            "startIndex": 61144,
+            "endIndex": 61662
         },
         {
-            "startIndex": 82531,
-            "endIndex": 100863
+            "startIndex": 62528,
+            "endIndex": 62812
         },
         {
-            "startIndex": 102892,
-            "endIndex": 127998
+            "startIndex": 85835,
+            "endIndex": 86019
+        },
+        {
+            "startIndex": 86529,
+            "endIndex": 86964
+        },
+        {
+            "startIndex": 90774,
+            "endIndex": 91835
+        },
+        {
+            "startIndex": 92552,
+            "endIndex": 93994
+        },
+        {
+            "startIndex": 94471,
+            "endIndex": 94643
+        },
+        {
+            "startIndex": 95554,
+            "endIndex": 95726
+        },
+        {
+            "startIndex": 96031,
+            "endIndex": 96256
+        },
+        {
+            "startIndex": 96597,
+            "endIndex": 98495
+        },
+        {
+            "startIndex": 104222,
+            "endIndex": 107009
+        },
+        {
+            "startIndex": 107925,
+            "endIndex": 109090
+        },
+        {
+            "startIndex": 109461,
+            "endIndex": 109903
+        },
+        {
+            "startIndex": 113785,
+            "endIndex": 114476
         }
     ],
     "rpeakAnnotationCounts": {

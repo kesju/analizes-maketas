@@ -7,20 +7,48 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 5022
+            "startIndex": 61239,
+            "endIndex": 73602
         },
         {
-            "startIndex": 58190,
-            "endIndex": 66269
+            "startIndex": 82392,
+            "endIndex": 82665
         },
         {
-            "startIndex": 66630,
-            "endIndex": 76444
+            "startIndex": 83696,
+            "endIndex": 84034
         },
         {
-            "startIndex": 79039,
-            "endIndex": 118303
+            "startIndex": 86205,
+            "endIndex": 86602
+        },
+        {
+            "startIndex": 88918,
+            "endIndex": 89093
+        },
+        {
+            "startIndex": 93357,
+            "endIndex": 93722
+        },
+        {
+            "startIndex": 96004,
+            "endIndex": 96905
+        },
+        {
+            "startIndex": 99006,
+            "endIndex": 100050
+        },
+        {
+            "startIndex": 101680,
+            "endIndex": 101905
+        },
+        {
+            "startIndex": 106804,
+            "endIndex": 107554
+        },
+        {
+            "startIndex": 109633,
+            "endIndex": 113820
         }
     ],
     "rpeakAnnotationCounts": {

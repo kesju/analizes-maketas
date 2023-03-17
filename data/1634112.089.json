@@ -8,24 +8,100 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 26230
+            "startIndex": 6,
+            "endIndex": 174
         },
         {
-            "startIndex": 34687,
-            "endIndex": 41666
+            "startIndex": 1277,
+            "endIndex": 1564
         },
         {
-            "startIndex": 77862,
-            "endIndex": 84197
+            "startIndex": 1593,
+            "endIndex": 1729
         },
         {
-            "startIndex": 98304,
-            "endIndex": 100126
+            "startIndex": 5013,
+            "endIndex": 5119
         },
         {
-            "startIndex": 95001,
-            "endIndex": 127998
+            "startIndex": 5568,
+            "endIndex": 5765
+        },
+        {
+            "startIndex": 6572,
+            "endIndex": 6698
+        },
+        {
+            "startIndex": 7922,
+            "endIndex": 8098
+        },
+        {
+            "startIndex": 8404,
+            "endIndex": 8536
+        },
+        {
+            "startIndex": 8699,
+            "endIndex": 8815
+        },
+        {
+            "startIndex": 8978,
+            "endIndex": 9102
+        },
+        {
+            "startIndex": 9279,
+            "endIndex": 10445
+        },
+        {
+            "startIndex": 11244,
+            "endIndex": 12270
+        },
+        {
+            "startIndex": 12824,
+            "endIndex": 13880
+        },
+        {
+            "startIndex": 14767,
+            "endIndex": 15956
+        },
+        {
+            "startIndex": 19312,
+            "endIndex": 19449
+        },
+        {
+            "startIndex": 21676,
+            "endIndex": 21962
+        },
+        {
+            "startIndex": 37956,
+            "endIndex": 38097
+        },
+        {
+            "startIndex": 80411,
+            "endIndex": 80811
+        },
+        {
+            "startIndex": 90927,
+            "endIndex": 91181
+        },
+        {
+            "startIndex": 98414,
+            "endIndex": 99668
+        },
+        {
+            "startIndex": 100537,
+            "endIndex": 102224
+        },
+        {
+            "startIndex": 102264,
+            "endIndex": 116258
+        },
+        {
+            "startIndex": 117336,
+            "endIndex": 118377
+        },
+        {
+            "startIndex": 118409,
+            "endIndex": 121174
         }
     ],
     "rpeakAnnotationCounts": {

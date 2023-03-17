@@ -8,24 +8,76 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 5298
+            "startIndex": 61,
+            "endIndex": 232
         },
         {
-            "startIndex": 15545,
-            "endIndex": 22207
+            "startIndex": 376,
+            "endIndex": 476
         },
         {
-            "startIndex": 39953,
-            "endIndex": 62927
+            "startIndex": 34584,
+            "endIndex": 34794
         },
         {
-            "startIndex": 64362,
-            "endIndex": 72991
+            "startIndex": 43148,
+            "endIndex": 43525
         },
         {
-            "startIndex": 74168,
-            "endIndex": 95031
+            "startIndex": 46168,
+            "endIndex": 46875
+        },
+        {
+            "startIndex": 49914,
+            "endIndex": 50397
+        },
+        {
+            "startIndex": 50691,
+            "endIndex": 50962
+        },
+        {
+            "startIndex": 51859,
+            "endIndex": 52682
+        },
+        {
+            "startIndex": 54824,
+            "endIndex": 55202
+        },
+        {
+            "startIndex": 59307,
+            "endIndex": 59604
+        },
+        {
+            "startIndex": 69251,
+            "endIndex": 69818
+        },
+        {
+            "startIndex": 70353,
+            "endIndex": 70596
+        },
+        {
+            "startIndex": 70874,
+            "endIndex": 71135
+        },
+        {
+            "startIndex": 77568,
+            "endIndex": 77678
+        },
+        {
+            "startIndex": 86211,
+            "endIndex": 86315
+        },
+        {
+            "startIndex": 91652,
+            "endIndex": 92038
+        },
+        {
+            "startIndex": 105601,
+            "endIndex": 105756
+        },
+        {
+            "startIndex": 110273,
+            "endIndex": 110507
         }
     ],
     "rpeakAnnotationCounts": {

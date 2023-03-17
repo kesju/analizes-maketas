@@ -7,20 +7,124 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 10621
+            "startIndex": 6731,
+            "endIndex": 6873
         },
         {
-            "startIndex": 20256,
-            "endIndex": 26369
+            "startIndex": 7124,
+            "endIndex": 7329
         },
         {
-            "startIndex": 83027,
-            "endIndex": 107212
+            "startIndex": 17572,
+            "endIndex": 17795
         },
         {
-            "startIndex": 110742,
-            "endIndex": 127998
+            "startIndex": 18565,
+            "endIndex": 19307
+        },
+        {
+            "startIndex": 22098,
+            "endIndex": 22303
+        },
+        {
+            "startIndex": 23299,
+            "endIndex": 23583
+        },
+        {
+            "startIndex": 25248,
+            "endIndex": 25437
+        },
+        {
+            "startIndex": 30216,
+            "endIndex": 30535
+        },
+        {
+            "startIndex": 33346,
+            "endIndex": 33583
+        },
+        {
+            "startIndex": 40834,
+            "endIndex": 40969
+        },
+        {
+            "startIndex": 52424,
+            "endIndex": 52554
+        },
+        {
+            "startIndex": 68707,
+            "endIndex": 68951
+        },
+        {
+            "startIndex": 71577,
+            "endIndex": 71822
+        },
+        {
+            "startIndex": 75008,
+            "endIndex": 75129
+        },
+        {
+            "startIndex": 75440,
+            "endIndex": 75550
+        },
+        {
+            "startIndex": 75869,
+            "endIndex": 76542
+        },
+        {
+            "startIndex": 77174,
+            "endIndex": 77763
+        },
+        {
+            "startIndex": 79435,
+            "endIndex": 79908
+        },
+        {
+            "startIndex": 84613,
+            "endIndex": 84941
+        },
+        {
+            "startIndex": 85537,
+            "endIndex": 87138
+        },
+        {
+            "startIndex": 92959,
+            "endIndex": 93977
+        },
+        {
+            "startIndex": 94005,
+            "endIndex": 97274
+        },
+        {
+            "startIndex": 97336,
+            "endIndex": 104648
+        },
+        {
+            "startIndex": 113673,
+            "endIndex": 117671
+        },
+        {
+            "startIndex": 120108,
+            "endIndex": 120604
+        },
+        {
+            "startIndex": 122374,
+            "endIndex": 122600
+        },
+        {
+            "startIndex": 123019,
+            "endIndex": 123177
+        },
+        {
+            "startIndex": 123545,
+            "endIndex": 123742
+        },
+        {
+            "startIndex": 125601,
+            "endIndex": 126158
+        },
+        {
+            "startIndex": 126926,
+            "endIndex": 127510
         }
     ],
     "rpeakAnnotationCounts": {

@@ -1,2 +1,7 @@
-padaryti menu ir page `rpeaks`, kuriame lygina anotuotą įrašą su rpeaks žymėmis su įrašu,
+1.padaryti menu sul.rpeaks  ir page `rpeaks`, kuriame lygina anotuotą įrašą su rpeaks žymėmis su įrašu,
 kur rpeaks grynai automatiniai, rankinis taisymas padarytas nebuvo 
+Analogiškai Sul.filtr,  sul.analiz
+
+2. Apkeisti vietomis  visur prapletimo ir suglaudinimo klavisus
+
+3. Ideti triuksmu charakter. - į sąrašą (kiek intervalų) ir į parametrus

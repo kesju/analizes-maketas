@@ -9,24 +9,16 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 9689
+            "startIndex": 68090,
+            "endIndex": 68634
         },
         {
-            "startIndex": 23784,
-            "endIndex": 30029
+            "startIndex": 92602,
+            "endIndex": 92960
         },
         {
-            "startIndex": 34403,
-            "endIndex": 44911
-        },
-        {
-            "startIndex": 64833,
-            "endIndex": 72296
-        },
-        {
-            "startIndex": 86698,
-            "endIndex": 96259
+            "startIndex": 125599,
+            "endIndex": 127083
         }
     ],
     "rpeakAnnotationCounts": {

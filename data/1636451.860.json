@@ -7,32 +7,24 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 12670
+            "startIndex": 3348,
+            "endIndex": 3758
         },
         {
-            "startIndex": 14430,
-            "endIndex": 21325
+            "startIndex": 7699,
+            "endIndex": 9866
         },
         {
-            "startIndex": 24729,
-            "endIndex": 32061
+            "startIndex": 17113,
+            "endIndex": 18098
         },
         {
-            "startIndex": 50593,
-            "endIndex": 57230
+            "startIndex": 37390,
+            "endIndex": 38194
         },
         {
-            "startIndex": 58022,
-            "endIndex": 65750
-        },
-        {
-            "startIndex": 84846,
-            "endIndex": 114994
-        },
-        {
-            "startIndex": 116321,
-            "endIndex": 124208
+            "startIndex": 97411,
+            "endIndex": 100705
         }
     ],
     "rpeakAnnotationCounts": {

@@ -5,28 +5,7 @@
     "flags": [
         "FULLY_ANNOTATED_PROFESSIONALLY"
     ],
-    "noises": [
-        {
-            "startIndex": 0,
-            "endIndex": 5261
-        },
-        {
-            "startIndex": 5401,
-            "endIndex": 17668
-        },
-        {
-            "startIndex": 22141,
-            "endIndex": 28139
-        },
-        {
-            "startIndex": 32437,
-            "endIndex": 39178
-        },
-        {
-            "startIndex": 74811,
-            "endIndex": 127972
-        }
-    ],
+    "noises": [],
     "rpeakAnnotationCounts": {
         "__info": "These include BOTH annotations created by analysis software (default R-peaks annotated with N) AND manually created and/or altered annotations",
         "N": 704,

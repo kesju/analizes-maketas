@@ -7,12 +7,8 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 3922
-        },
-        {
-            "startIndex": 4284,
-            "endIndex": 127998
+            "startIndex": 15030,
+            "endIndex": 15463
         }
     ],
     "rpeakAnnotationCounts": {

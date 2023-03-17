@@ -7,24 +7,24 @@
     ],
     "noises": [
         {
-            "startIndex": 5291,
-            "endIndex": 11367
+            "startIndex": 43818,
+            "endIndex": 44642
         },
         {
-            "startIndex": 41409,
-            "endIndex": 55467
+            "startIndex": 48448,
+            "endIndex": 48643
         },
         {
-            "startIndex": 80131,
-            "endIndex": 89602
+            "startIndex": 49413,
+            "endIndex": 49859
         },
         {
-            "startIndex": 91231,
-            "endIndex": 98274
+            "startIndex": 83320,
+            "endIndex": 86434
         },
         {
-            "startIndex": 121510,
-            "endIndex": 127998
+            "startIndex": 94423,
+            "endIndex": 94628
         }
     ],
     "rpeakAnnotationCounts": {

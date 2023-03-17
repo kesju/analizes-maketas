@@ -9,19 +9,11 @@
     ],
     "noises": [
         {
-            "startIndex": 0,
-            "endIndex": 57274
+            "startIndex": 112105,
+            "endIndex": 112118
         },
         {
-            "startIndex": 58605,
-            "endIndex": 75962
-        },
-        {
-            "startIndex": 80198,
-            "endIndex": 90053
-        },
-        {
-            "startIndex": 91814,
+            "startIndex": 112128,
             "endIndex": 115198
         }
     ],
