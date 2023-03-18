@@ -103,7 +103,7 @@ app.add_middleware(
 )
 
 # endpoint nr. 1: atiduoda visą EKG sąrašą su keys esančiais parametrais
-keys = ["file_name","userId", "recordingId",  "S", "V", "incl", "flag", "comment"]                                                                                                                                                                              
+keys = ["file_name","userId", "recordingId",  "S", "V", "Tr", "incl", "flag", "comment"]                                                                                                                                                                              
 items = []                                                                                                                                                                                            
 
 for row in ekg_list: 
@@ -122,6 +122,7 @@ class Item(BaseModel):
     recordingId: str
     S: int
     V: int
+    Tr: int
     incl: int
     flag: int
     comment: str
@@ -130,18 +131,18 @@ class Item(BaseModel):
 async def read_items():
     return items
 
-class ItemProps(BaseModel):
-    file_name: str
-    userId: str
-    recordingId: str
-    N: int
-    S: int
-    V: int
-    U: int
-    incl: int
-    flag: int
-    comment: str
-    recorded_at: str 
+# class ItemProps(BaseModel):
+#     file_name: str
+#     userId: str
+#     recordingId: str
+#     N: int
+#     S: int
+#     V: int
+#     U: int
+#     incl: int
+#     flag: int
+#     comment: str
+#     recorded_at: str 
 
 
 # endpoint nr. 2 paduoda uždavus failo vardą fname atiduoda iš sąrašo visus EKG parametrus

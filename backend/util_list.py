@@ -22,19 +22,23 @@ def zive_read_file_1ch(filename):
 def add_comments(df_list, df_comments):
     # merge the two dataframes based on the 'key' column with left join
     merged = pd.merge(df_list, df_comments, on='file_name', how='left')
-    # print("\n",merged)
+    print("\n",merged)
 
     # fill missing values with corresponding value from the other column
     merged['incl_x'] = merged['incl_y'].fillna(merged['incl_x'])
     merged = merged.drop(columns=['incl_y'])
 
-    # fill missing values with corresponding value from the other column
-    merged['S_x'] = merged['S_y'].fillna(merged['S_x'])
-    merged = merged.drop(columns=['S_y'])
+    # # fill missing values with corresponding value from the other column
+    # merged['S_x'] = merged['S_y'].fillna(merged['S_x'])
+    # merged = merged.drop(columns=['S_y'])
     
-    # fill missing values with corresponding value from the other column
-    merged['V_x'] = merged['V_y'].fillna(merged['V_x'])
-    merged = merged.drop(columns=['V_y'])
+    # # fill missing values with corresponding value from the other column
+    # merged['V_x'] = merged['V_y'].fillna(merged['V_x'])
+    # merged = merged.drop(columns=['V_y'])
+    
+    # # fill missing values with corresponding value from the other column
+    # merged['Tr_x'] = merged['Tr_y'].fillna(merged['Tr_x'])
+    # merged = merged.drop(columns=['Tr_y'])
 
     # fill missing values with corresponding value from the other column
     merged['flag_x'] = merged['flag_y'].fillna(merged['flag_x'])
@@ -59,6 +63,7 @@ def collect_list(db_path):
                             'S': pd.Series(dtype='int'),
                             'V': pd.Series(dtype='int'),
                             'U': pd.Series(dtype='int'),
+                            'Tr': pd.Series(dtype='int'),
                             'incl': pd.Series(dtype='int'), 
                             'flag': pd.Series(dtype='int'),
                             'comment': pd.Series(dtype='str'),
@@ -95,13 +100,12 @@ def collect_list(db_path):
         with open(filepath,'r', encoding='UTF-8', errors = 'ignore') as f:
             data = json.loads(f.read())
         dict_annot = data['rpeakAnnotationCounts']
-
         # filename_str = "{:.3f}".format(filename)
         # print(filename, filename_str)
 
         dict_row = {'file_name':filename, 'userId':data['userId'], 'recordingId':data['recordingId'],
         'N':dict_annot.get('N',0), 'S':dict_annot.get('S',0), 'V':dict_annot.get('V',0),
-        'U':dict_annot.get('U',0),'incl':0,'flag':0,'comment':"",'recorded_at':timestamp}
+        'U':dict_annot.get('U',0), 'Tr':len(data['noises']),'incl':0,'flag':0,'comment':"",'recorded_at':timestamp}
         
         df_row = pd.DataFrame([dict_row])
         df_list = pd.concat([df_list,df_row], axis=0) 
@@ -121,6 +125,8 @@ def collect_list(db_path):
         'flag': int,
         'S': int,
         'V': int,
+        'U': int,
+        'Tr':int,
         'comment': str }
 
     file_path = Path(db_path, 'comments.csv')
