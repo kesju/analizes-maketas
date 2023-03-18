@@ -51,6 +51,54 @@ const ShowGraph = ({data, options, width, height}) => {
 }
 
 
+const NoiseAnnotations = (noises, at, length) => {
+  const noiseAnnotations = [];
+
+  for (let i = 0; i < noises.length; i++) {
+    const startIdx = noises[i].startIndex;
+    const endIdx = noises[i].endIndex;
+
+    // Case 1: Noise object overlaps with all specified range
+    if (startIdx <= at && endIdx >= at + length) {
+      noiseAnnotations.push({
+        startIndex: at,
+        endIndex: at + length
+      });
+      break;
+    }
+
+    // Case 2: Noise object end is greater than at+length but start is less than at+length
+    if (endIdx > at + length && startIdx < at + length) {
+      noiseAnnotations.push({
+        startIndex: Math.max(startIdx, at),
+        endIndex: at + length
+      });
+    }
+
+    // Case 3: Noise object end is greater than at but start is less than at
+    if (endIdx > at && startIdx < at) {
+      noiseAnnotations.push({
+        startIndex: at,
+        endIndex: Math.min(endIdx, at + length)
+      });
+    }
+
+    // Case 4: Noise object start is greater than at and end is less than at+length
+    if (startIdx >= at && endIdx <= at + length) {
+      noiseAnnotations.push({
+        startIndex: startIdx,
+        endIndex: endIdx
+      });
+    }
+  }
+
+  const noiseVisualAnnotations = noiseAnnotations.map((annotation) => ({
+    startIndex: annotation.startIndex - at,
+    endIndex: annotation.endIndex - at
+  }));
+  return (noiseVisualAnnotations)
+}
+
 
 const GenerateChartConfig = (idxArray, valueArray, idxRpeaks, annotationValues, noiseIntervals) => {
 
@@ -223,16 +271,16 @@ const EkgNoises = () => {
     const step = Math.max(1, Math.floor(param.length / 10));
     
     switch (event.keyCode) {
-      case 37: // left arrow key
+      case 37: // left arrow key - atgal
       setParam({ ...param, at: (param.at - step) >= 0 ? param.at - step : 0});
       break;
-      case 38: // up arrow key
+      case 40: // up arrow key - išplečia
       setParam({ ...param, length: (param.length + 100) <= data_rec.length ? param.length + 100 : data_rec.length });
       break;
-      case 39: // right arrow key
+      case 39: // right arrow key - pirmyn
       setParam({ ...param, at: (param.at + step) <= data_rec.length ? param.at + step : param.at });
       break;
-      case 40: // down arrow key
+      case 38: // down arrow key - suglaudžia
       setParam({ ...param, length: Math.max(param.length - 100, 100) });
       break;
       default:
@@ -254,84 +302,37 @@ const EkgNoises = () => {
     .map((rpeak) => rpeak.annotationValue);
     console.log(annotationVisualValues);
 
-    // const noiseAnnotations = [
-    //   {startIndex: 10, endIndex: 100},
-    //   {startIndex: 510, endIndex: 600}
-    // ];
 
-  //   const noises = [
-  //     {
-  //         startIndex: 100,
-  //         endIndex: 500
-  //     },
-  //     {
-  //         startIndex: 600,
-  //         endIndex: 700
-  //     },
-  //     {
-  //         startIndex: 1200,
-  //         endIndex: 1300
-  //     },
-  //     {
-  //         startIndex: 1800,
-  //         endIndex: 2400
-  //     },
-  //     {
-  //         startIndex: 86698,
-  //         endIndex: 96259
-  //     }
-  // ];
+//  testavimui
+    const noises = [
+      {
+          startIndex: 100,
+          endIndex: 500
+      },
+      {
+          startIndex: 600,
+          endIndex: 700
+      },
+      {
+          startIndex: 1200,
+          endIndex: 1300
+      },
+      {
+          startIndex: 1800,
+          endIndex: 2400
+      },
+      {
+          startIndex: 86698,
+          endIndex: 96259
+      }
+  ];
 
-  const noises = annot_js.noises
-  const noiseAnnotations = [];
-
-  for (let i = 0; i < noises.length; i++) {
-    const startIdx = noises[i].startIndex;
-    const endIdx = noises[i].endIndex;
-
-    // Case 1: Noise object overlaps with all specified range
-    if (startIdx <= param.at && endIdx >= param.at + param.length) {
-      noiseAnnotations.push({
-        startIndex: param.at,
-        endIndex: param.at + param.length
-      });
-      break;
-    }
-
-    // Case 2: Noise object end is greater than param.at+param.length but start is less than param.at+param.length
-    if (endIdx > param.at + param.length && startIdx < param.at + param.length) {
-      noiseAnnotations.push({
-        startIndex: Math.max(startIdx, param.at),
-        endIndex: param.at + param.length
-      });
-    }
-
-    // Case 3: Noise object end is greater than param.at but start is less than param.at
-    if (endIdx > param.at && startIdx < param.at) {
-      noiseAnnotations.push({
-        startIndex: param.at,
-        endIndex: Math.min(endIdx, param.at + param.length)
-      });
-    }
-
-    // Case 4: Noise object start is greater than param.at and end is less than param.at+param.length
-    if (startIdx >= param.at && endIdx <= param.at + param.length) {
-      noiseAnnotations.push({
-        startIndex: startIdx,
-        endIndex: endIdx
-      });
-    }
-  }
-
-  const noiseVisualAnnotations = noiseAnnotations.map((annotation) => {
-    return {
-      startIndex: annotation.startIndex - param.at,
-      endIndex: annotation.endIndex - param.at
-    };
-  });
+  // const noises = annot_js.noises
+  
+  const noiseVisualAnnotations = NoiseAnnotations(noises, param.at, param.length);
 
   console.log(param.at, param.length)
-  console.log('noiseAnnotations:', noiseAnnotations)
+  console.log('noiseAnnotations:', noiseVisualAnnotations)
 
     const {data, options} = GenerateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
