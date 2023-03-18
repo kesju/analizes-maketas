@@ -16,10 +16,10 @@ export default function Header(props) {
                     <Tab component={Link} to="EkgGraph" label="Anot.įrašas" />
                     <Tab component={Link} to="EkgPrm" label="Parametrai" />
                     <Tab component={Link} to="Analysis" label="Orig.analizė" />
-                    {/* <Tab component={Link} to="EkgValues" label="Ekg Values" /> */}
-                    {/* <Tab component={Link} to="EkgRpeaks" label="Ekg Rpeaks" /> */}
-                    <Tab component={Link} to="EkgNoises" label="Triukšmai" />
-                    <Tab component={Link} to="Filtration" label="Filtravimas" />
+                    <Tab component={Link} to="EkgValues" label="Sul.analiz." />
+                    <Tab component={Link} to="EkgRpeaks" label="Sul.rpeaks" />
+                    <Tab component={Link} to="EkgNoises" label="Sul.triukšm." />
+                    <Tab component={Link} to="Filtration" label="Sul.filtrav." />
                     <Tab component={Link} to="Testing" label="Testas" />
                 </Tabs>
             </Toolbar>

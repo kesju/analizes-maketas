@@ -304,35 +304,34 @@ const EkgNoises = () => {
 
 
 //  testavimui
-    const noises = [
-      {
-          startIndex: 100,
-          endIndex: 500
-      },
-      {
-          startIndex: 600,
-          endIndex: 700
-      },
-      {
-          startIndex: 1200,
-          endIndex: 1300
-      },
-      {
-          startIndex: 1800,
-          endIndex: 2400
-      },
-      {
-          startIndex: 86698,
-          endIndex: 96259
-      }
-  ];
+  //   const noises = [
+  //     {
+  //         startIndex: 100,
+  //         endIndex: 500
+  //     },
+  //     {
+  //         startIndex: 600,
+  //         endIndex: 700
+  //     },
+  //     {
+  //         startIndex: 1200,
+  //         endIndex: 1300
+  //     },
+  //     {
+  //         startIndex: 1800,
+  //         endIndex: 2400
+  //     },
+  //     {
+  //         startIndex: 86698,
+  //         endIndex: 96259
+  //     }
+  // ];
 
   // const noises = annot_js.noises
-  
-  const noiseVisualAnnotations = NoiseAnnotations(noises, param.at, param.length);
+  const noiseVisualAnnotations = NoiseAnnotations(annot_js.noises, param.at, param.length);
 
-  console.log(param.at, param.length)
-  console.log('noiseAnnotations:', noiseVisualAnnotations)
+  // console.log(param.at, param.length)
+  // console.log('noiseAnnotations:', noiseVisualAnnotations)
 
     const {data, options} = GenerateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);

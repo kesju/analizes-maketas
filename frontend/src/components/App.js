@@ -50,9 +50,10 @@ function ControlledSelectionGrid({ setAuth }) {
       { field: 'col4', headerName: 'userId', width: 250 },
       { field: 'col5', headerName: 'S', width: 50 },
       { field: 'col6', headerName: 'V', width: 50 },
-      { field: 'col7', headerName: 'incl', width: 50 },
-      { field: 'col8', headerName: 'flag', width: 50 },
-      { field: 'col9', headerName: 'comment', width: 250 },
+      { field: 'col7', headerName: 'Tr', width: 50 },
+      { field: 'col8', headerName: 'incl', width: 50 },
+      { field: 'col9', headerName: 'flag', width: 50 },
+      { field: 'col10', headerName: 'comment', width: 250 },
     ];
 
   const rows = arr.map((item, index) => ({
@@ -63,9 +64,10 @@ function ControlledSelectionGrid({ setAuth }) {
            col4: item.userId,
            col5: item.S,
            col6: item.V,
-           col7: item.incl,
-           col8: item.flag,
-           col9: item.comment,
+           col7: item.Tr,
+           col8: item.incl,
+           col9: item.flag,
+           col10: item.comment,
   }))
   console.log(rows)
 

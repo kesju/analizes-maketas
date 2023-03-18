@@ -1,7 +1,9 @@
 1.padaryti menu sul.rpeaks  ir page `rpeaks`, kuriame lygina anotuotą įrašą su rpeaks žymėmis su įrašu,
 kur rpeaks grynai automatiniai, rankinis taisymas padarytas nebuvo 
-Analogiškai Sul.filtr,  sul.analiz
+Analogiškai Sul.filtr,  sul.analiz, sul.triukšm.
 
-2. Apkeisti vietomis  visur prapletimo ir suglaudinimo klavisus
+2. Apkeisti vietomis  visur prapletimo ir suglaudinimo klavisus - atlikta
 
 3. Ideti triuksmu charakter. - į sąrašą (kiek intervalų) ir į parametrus
+
+4. įdėti param.at, param.length - į AuthContext 

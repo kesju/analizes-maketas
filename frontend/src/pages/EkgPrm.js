@@ -47,6 +47,27 @@ function MyAnnotations(props) {
   );
 }
 
+function MyNoises(props) {
+  const {noiseAnnotations} = props;
+  
+  if (noiseAnnotations.length === 0) {
+    return <div>&nbsp;Pažymėtų triukšmų nėra</div>;
+  }
+
+  return (
+    <div>  
+       <div>
+        <>Pažymėtų triukšmų intervalų: {noiseAnnotations.length} </>
+       </div>
+        {noiseAnnotations.map((noise, index) => (
+          <span key={index}>
+            {`(${noise.startIndex}, ${noise.endIndex})`}
+            {index < noiseAnnotations.length - 1 ? ", " : ""}
+          </span>
+        ))}
+      </div>
+    );
+}
 
 const EkgPrm = () => {
     const auth = useContext(AuthContext);
@@ -79,6 +100,7 @@ const EkgPrm = () => {
       const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V');
       console.log('sElements:',sElements)
       console.log('vElements:',vElements)
+      console.log('annot_js.noises:',annot_js.noises)
       
       return(
         <div>
@@ -86,6 +108,7 @@ const EkgPrm = () => {
             <ShowPrm prm = {data_prm} /> 
             <MyAnnotations annotation= 'S' data={sElements} />
             <MyAnnotations annotation= 'V' data={vElements} />
+            <MyNoises noiseAnnotations = {annot_js.noises} />
         </div>
         );
       }
