@@ -18,7 +18,6 @@ def zive_read_file_1ch(filename):
     ecg_signal = b - np.mean(b)
     return ecg_signal
 
-
 def add_comments(df_list, df_comments):
     # merge the two dataframes based on the 'key' column with left join
     merged = pd.merge(df_list, df_comments, on='file_name', how='left')
@@ -28,19 +27,7 @@ def add_comments(df_list, df_comments):
     merged['incl_x'] = merged['incl_y'].fillna(merged['incl_x'])
     merged = merged.drop(columns=['incl_y'])
 
-    # # fill missing values with corresponding value from the other column
-    # merged['S_x'] = merged['S_y'].fillna(merged['S_x'])
-    # merged = merged.drop(columns=['S_y'])
-    
-    # # fill missing values with corresponding value from the other column
-    # merged['V_x'] = merged['V_y'].fillna(merged['V_x'])
-    # merged = merged.drop(columns=['V_y'])
-    
-    # # fill missing values with corresponding value from the other column
-    # merged['Tr_x'] = merged['Tr_y'].fillna(merged['Tr_x'])
-    # merged = merged.drop(columns=['Tr_y'])
-
-    # fill missing values with corresponding value from the other column
+   # fill missing values with corresponding value from the other column
     merged['flag_x'] = merged['flag_y'].fillna(merged['flag_x'])
     merged = merged.drop(columns=['flag_y'])
     # fill missing values with corresponding value from the other column
@@ -121,12 +108,13 @@ def collect_list(db_path):
     # add_comments(df_list,comments), papildoma informacija yra csv pavidalu
     
     dtypes = {
-        'incl': int,
-        'flag': int,
+        'N': int,
         'S': int,
         'V': int,
         'U': int,
         'Tr':int,
+        'incl': int,
+        'flag': int,
         'comment': str }
 
     file_path = Path(db_path, 'comments.csv')

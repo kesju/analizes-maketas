@@ -56,7 +56,7 @@ rec_folder = 'data'
 fp = {  'type': 'lowcut',
         'method':'butterworth',
         'order':5,
-        'lowcut':0.5,
+        'lowcut':1.0,
         'highcut':20 }
 
 
@@ -103,7 +103,7 @@ app.add_middleware(
 )
 
 # endpoint nr. 1: atiduoda visą EKG sąrašą su keys esančiais parametrais
-keys = ["file_name","userId", "recordingId",  "S", "V", "Tr", "incl", "flag", "comment"]                                                                                                                                                                              
+keys = ["file_name","userId", "recordingId", "N", "S", "V", "U", "Tr", "incl", "flag", "comment"]                                                                                                                                                                              
 items = []                                                                                                                                                                                            
 
 for row in ekg_list: 
@@ -120,8 +120,10 @@ class Item(BaseModel):
     file_name: str
     userId: str
     recordingId: str
+    N: int
     S: int
     V: int
+    U: int
     Tr: int
     incl: int
     flag: int
@@ -290,6 +292,24 @@ async def return_json(fname: str = "1626931.201"):
 # analysis_results = AnalyseHeartrate(ecg_signal_df)
 # rpeaks_from_signal = analysis_results['rpeaks']
 # print(f"rpeaks iš signal: {len(rpeaks_from_signal)}")
+
+# endpoint nr. 6.1 uždavus failo vardą fname atiduoda EKG rpeaks (rpeaks), gautus su Neurokit 
+@app.get("/nk_rpeaks/")
+async def return_props3(fname: str = "1642627.410"):
+ fpath = Path(db_path, fname)   
+ signal_raw = zive_read_file_1ch(fpath)
+
+# Variantas su filtravimu - užblokuotas
+# signal = signal_filter(signal=signal_raw, sampling_rate=200, lowcut=0.5, method="butterworth", order=5)
+ signal = signal_raw    
+ ecg_signal_df = pd.DataFrame(signal, columns=['orig'])
+
+ analysis_results = AnalyseHeartrate(ecg_signal_df)
+ nk_rpeaks = analysis_results['rpeaks']
+ print(f"rpeaks iš signal: {len(nk_rpeaks)}")
+#  print(nk_rpeaks[:20])
+ return(nk_rpeaks)
+
 
 
 

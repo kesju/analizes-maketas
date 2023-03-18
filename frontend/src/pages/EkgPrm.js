@@ -14,13 +14,14 @@ const ShowPrm = ({prm}) => {
     } else { 
       return(
         <ul>
-           <h1>Ekg parametrai:</h1>
-           <li>File Name: {prm.file_name}</li>
+           <h1>File Name: {prm.file_name},  įrašo parametrai:</h1>
            <li>UserId: {prm.userId}</li>
            <li>RecordingId: {prm.recordingId}</li>
            <li>N: {prm.N}</li>
            <li>S: {prm.S}</li>
            <li>V: {prm.V}</li>
+           <li>U: {prm.U}</li>
+           <li>Tr: {prm.Tr}</li>
            <li>flag: {prm.flag}</li>
            <li>incl: {prm.incl}</li>
            <li>comment: {prm.comment}</li>
@@ -39,9 +40,12 @@ function MyAnnotations(props) {
 
   return (
     <div>
-      <span>&nbsp;{annotation}: </span>
-      {data.map(({sampleIndex, annotationValue}) => (
-        <span key={sampleIndex}>{`${sampleIndex},  `}</span>
+      <span >&nbsp;{annotation}: </span>
+      {data.map((element, index) => (
+        <span key={index}>
+        {`${element.sampleIndex}`}
+        {index < data.length - 1 ? ", " : ""}
+        </span>
       ))}
     </div>
   );

@@ -1,14 +1,42 @@
-// Čia bus EKG grafikas su rpeaks
+// Čia išveda originalaus EKG įrašo grafiką
 
-import {useEffect, useState, useContext, React} from 'react';
+import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
-import UPlotReact from 'uplot-react';
-import 'uplot/dist/uPlot.min.css';
+// import {noiseAnnotations} from '../components/utils/noiseAnnotations'
+import {generateChartConfig} from '../components/utils/generateChartConfig'
 import './MyChart.css';
-import 'uplot/dist/uPlot.min.css';
-import axios from "axios";
+import "chartjs-plugin-annotation";
+import useAxiosGet from "../components/useAxiosGet"
 
-const ShowGraph = ({data, options, className}) => {
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+import { Line } from 'react-chartjs-2';
+import annotationPlugin from 'chartjs-plugin-annotation';
+// import { red, yellow } from '@mui/material/colors';
+
+ChartJS.register(
+  annotationPlugin,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
+
+const ShowGraph = ({data, options, width, height}) => {
 
   const auth = useContext(AuthContext);
 
@@ -17,143 +45,138 @@ const ShowGraph = ({data, options, className}) => {
         <h1>Pasirink įrašą!</h1>
       ); 
     } else { 
-
-    return(
-      // <div>
-        <UPlotReact data={data} options={options} className={className}/>
-      // </div>
-    );
+      return(
+        // <div className="my-chart-container">
+        <div>
+        <Line width={width} height={height} options={options} data={data} />;
+        </div>
+      );
   } 
 }
-
-const fetchRecord = async (auth) => {
-try {
-  const { data } = await axios.get(
-    "http://localhost:8000/record",
-    {
-      params: {
-        fname:auth,
-      }
-    }
-  );
-  console.log("cia record",data)
-  return { status: "success", response: data };    
-  } catch (error) {
-  return { status: "failure", response: error };
-  }
-};
 
 const EkgRpeaks = () => {
 
   const auth = useContext(AuthContext);
-  const [chartData, setChartData] = useState([]);
-  const [record, setRecord] = useState([]);
-  const [error, setError] = useState("");
+  // const auth = "1642627.410";
+  console.log(auth)
+
   const [param, setParam] = useState({
     at: 0,
     length: 1000,
   })
+  // loading ECG record
+  const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
+    "http://localhost:8000/record",
+          {
+            params: {
+              fname:auth,
+            }
+          }
+  );
+ 
+  // loading json with rpeaks and beat and noise annotations edited mannually 
+  const { data: annot_js, error: error_js, loaded: loaded_js } = useAxiosGet(
+    "http://localhost:8000/annotations",
+            {
+              params: {
+                fname:auth,
+              }
+            }
+  );
 
-  const fetchData = async (auth) => {
-    const { status, response } = await fetchRecord(auth);
-    if (status === "success") {
-      // const chartData = response.map(({ idx, value }) => [idx, value]);
-      setRecord(response);
-      console.log('cia record', response)
-      // console.log('cia auth',auth)
-    } else if (status === "failure") {
-      setError("Failed to fetch data!");
-    }
-  };
+// loading rpeaks determined fully automatically by Neurokit 2 
+  const { data: nk_rpeaks, error: error_nk, loaded: loaded_nk } = useAxiosGet(
+    "http://localhost:8000/nk_rpeaks",
+            {
+              params: {
+                fname:auth,
+              }
+            }
+  );
 
-  // Čia originaus EKG įrašo grafikas 
-  
   function handleInputChange(event) {
     const { name, value } = event.target;
-    // let step = Math.max(1, Math.floor(param.length / 10));
     setParam({ ...param, [name]: parseInt(value) }); // include atStep in updated state
   }
-
-  useEffect(() => {
-    async function getData() {
-      await fetchData(auth);
-    }
-    getData();
-  }, [auth]);
   
   function handleKeyDown(event) {
     const step = Math.max(1, Math.floor(param.length / 10));
-
+    
     switch (event.keyCode) {
-      case 37: // left arrow key
+      case 37: // left arrow key - atgal
       setParam({ ...param, at: (param.at - step) >= 0 ? param.at - step : 0});
       break;
-      case 38: // up arrow key
-      setParam({ ...param, length: (param.length + 100) <= record.length ? param.length + 100 : record.length });
+      case 40: // up arrow key - išplečia
+      setParam({ ...param, length: (param.length + 100) <= data_rec.length ? param.length + 100 : data_rec.length });
       break;
-      case 39: // right arrow key
-      setParam({ ...param, at: (param.at + step) <= record.length ? param.at + step : param.at });
+      case 39: // right arrow key - pirmyn
+      setParam({ ...param, at: (param.at + step) <= data_rec.length ? param.at + step : param.at });
       break;
-      case 40: // down arrow key
+      case 38: // down arrow key - suglaudžia
       setParam({ ...param, length: Math.max(param.length - 100, 100) });
       break;
       default:
         break;
       }
     }
+  
+  if (loaded_rec && loaded_js && loaded_nk) {
+    const segmentData = data_rec.slice(param.at, param.at + param.length);
+    // console.log("segmentData:", segmentData)
+    const idxVisualArray = segmentData.map((data) => data.idx);
+    const valueVisualArray = segmentData.map((data) => data.value);
+ 
+    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    .map((rpeak) => rpeak.sampleIndex - param.at);
+    // console.log('idxVisualRpeaks:',idxVisualRpeaks);
+  
+    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    .map((rpeak) => rpeak.annotationValue);
+    // console.log(annotationVisualValues);
+
+    const idxVisualNkRpeaks = nk_rpeaks.filter((rpeak) => rpeak >= param.at && rpeak < param.at + param.length)
+    .map((rpeak) => rpeak - param.at);
+    // console.log('idxVisualNkRpeaks:',idxVisualNkRpeaks);
+  
+    const annotationVisualValuesNk = idxVisualNkRpeaks.map(() => "N");
+    // console.log(annotationVisualValuesNk);
     
-  const options = {
-    width: 1400,
-    height: 400,
-    series: [
-      {},
-      {
-        label: 'Values',
-        stroke: 'blue',
-      },
-  ],
-    scales: {
-      x: {
-        time: false,
-      },
-    },
-  };
+  // const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
+  const noiseVisualAnnotations = [];
 
-  useEffect(() => {
-    const generateChartData = () => {
-      const segmentData = record.slice(param.at, param.at + param.length);
-      const idxArray = segmentData.map((data) => data.idx);
-      const valueArray = segmentData.map((data) => data.value);
-      const chartData = [idxArray, valueArray]; 
-      setChartData(chartData);
-    };  
-    generateChartData();
-  }, [record, param]);
+  const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
+       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
+  
+  const {data:data_nk, options:options_nk} = generateChartConfig(idxVisualArray, valueVisualArray,
+        idxVisualNkRpeaks, annotationVisualValuesNk, noiseVisualAnnotations);
+  options_nk.scales.x.ticks.display = false;
 
-  return (
-    // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
-    <div onKeyDown={handleKeyDown} tabIndex="0" >
+
+  // console.log('data_nk:',data_nk)  
+  // console.log('options_nk:',options_nk)  
+
+    return (
+      <div onKeyDown={handleKeyDown} tabIndex="0" >
+        
+        {/* <form> */}
+          <label>
+            at:
+            <input type="number" name="at" value={param.at} onChange={handleInputChange} />
+          </label>
+          {/* <br /> */}
+          <label>
+            length:
+            <input type="number" name="length" value={param.length} onChange={handleInputChange} />
+          </label>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
+          <ShowGraph data={data} options={options} width={1200} height={300}/>
+          <ShowGraph data={data_nk} options={options_nk} width={1200} height={300}/>
       
-      {/* <form> */}
-        <label>
-          at:
-          {/* <input type="number" name="at" value={param.at} onChange={handleInputChange} /> */}
-          <input type="number" name="at" value={param.at} onChange={handleInputChange} />
-        </label>
-        {/* <br /> */}
-        <label>
-          length:
-          <input type="number" name="length" value={param.length} onChange={handleInputChange} />
-        </label>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {record.length}  
-      {/* </form> */}
-      {/* <br /> */}
-      
-      <ShowGraph data={chartData} options={options} className={"my-chart"}/>
-    </div>
-  );
-}
+      </div>
+    );
+  }
+    
+  return <span>Loading...</span>;
+};
 
 export default EkgRpeaks
-
-

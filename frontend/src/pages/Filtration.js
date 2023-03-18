@@ -2,6 +2,8 @@
 
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
+import {generateChartConfig} from '../components/utils/generateChartConfig'
+
 // import './MyChart.css';
 import "chartjs-plugin-annotation";
 import useAxiosGet from "../components/useAxiosGet"
@@ -50,108 +52,108 @@ const ShowGraph = ({data, options, width, height}) => {
 }
 
 
-const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) => {
+// const GenerateChartData = (idxArray, valueArray, idxRpeaks, annotationValues) => {
 
-  const data = {
-    labels: idxArray,
-    datasets: [{
-    label: 'EKG reikšmės',
-    fill: false,
-    lineTension: 0.1,
-    borderColor: 'blue',
-    borderWidth: 1, // <--- Line thickness is defined here
-    pointRadius: 0, // <--- Set to 0 to remove markers
-    data: valueArray,
-  }]
-  };      
+//   const data = {
+//     labels: idxArray,
+//     datasets: [{
+//     label: 'EKG reikšmės',
+//     fill: false,
+//     lineTension: 0.1,
+//     borderColor: 'blue',
+//     borderWidth: 1, // <--- Line thickness is defined here
+//     pointRadius: 0, // <--- Set to 0 to remove markers
+//     data: valueArray,
+//   }]
+//   };      
 
-  const valueRpeaks = [];
-  for (let i = 0; i < idxRpeaks.length; i++) {  
-    valueRpeaks.push(valueArray[idxRpeaks[i]]);        
-  }
+//   const valueRpeaks = [];
+//   for (let i = 0; i < idxRpeaks.length; i++) {  
+//     valueRpeaks.push(valueArray[idxRpeaks[i]]);        
+//   }
 
-  const annotations1 = [];
-  const annotations2 = [];
+//   const annotations1 = [];
+//   const annotations2 = [];
 
-  for (let i = 0; i < idxRpeaks.length; i++) {
-  const point = {
-    type: 'point',
-    xValue: idxRpeaks[i],
-    yValue: valueRpeaks[i],
-    radius: 2,
-    pointStyle: 'circle',
-  };
-  annotations1.push(point);
-  if (annotationValues[i] !== 'N') {
-      const point2 = {
-            type: 'label',
-            xValue: idxRpeaks[i],
-            yValue: valueRpeaks[i],
-            enabled: true,
-            xAdjust: -10, // pixels
-            yAdjust: -10, // pixels
-            content: [annotationValues[i]],
-            font: {
-              size: 14,
-              color: 'red', // set the font color of the label here
-            },
-      };
-      annotations2.push(point2);
-    };
-  }
-  const annotations = annotations1.concat(annotations2);
+//   for (let i = 0; i < idxRpeaks.length; i++) {
+//   const point = {
+//     type: 'point',
+//     xValue: idxRpeaks[i],
+//     yValue: valueRpeaks[i],
+//     radius: 2,
+//     pointStyle: 'circle',
+//   };
+//   annotations1.push(point);
+//   if (annotationValues[i] !== 'N') {
+//       const point2 = {
+//             type: 'label',
+//             xValue: idxRpeaks[i],
+//             yValue: valueRpeaks[i],
+//             enabled: true,
+//             xAdjust: -10, // pixels
+//             yAdjust: -10, // pixels
+//             content: [annotationValues[i]],
+//             font: {
+//               size: 14,
+//               color: 'red', // set the font color of the label here
+//             },
+//       };
+//       annotations2.push(point2);
+//     };
+//   }
+//   const annotations = annotations1.concat(annotations2);
 
-  const options = {
-  responsive: false,
-  maintainAspectRatio: true,
-  animation: false, // <--- disable animation
-  // legend: {   neveikia
-  //   display: false //This will do the task
-  // },
-  // colors: { neveikia
-  //   forceOverride: true
-  // },
-  scales: {
-    x: {
-      ticks: {  // Nuįma x ašies ticks
-        display: false
-      },  
-    grid: {
-      display: false
-    },
-    //   ticks: {
-    //     stepSize: 5
-    },
-    //   // autoSkip: true, // <--- enable auto-skipping of labels
-    //   maxTicksLimit: 50, // <--- maximum number of labels to show
-    // },
-    y: {
-      type: 'linear',
-      grace: '10%'
-        // max: 5,
-        // min: 0,
-        // ticks: {
-        //     stepSize: 0.1
-        // }
-    }
-  },  
-  plugins: {
-    legend: {
-      display: false
-    },
-    // legend: {
-    //   position: 'top',
-    // },
-    // title: {
-    //   display: true,
-    // },
-    annotation: {
-      annotations: annotations
-      }
-    }
-  };
-  return {data, options}
-}
+//   const options = {
+//   responsive: false,
+//   maintainAspectRatio: true,
+//   animation: false, // <--- disable animation
+//   // legend: {   neveikia
+//   //   display: false //This will do the task
+//   // },
+//   // colors: { neveikia
+//   //   forceOverride: true
+//   // },
+//   scales: {
+//     x: {
+//       ticks: {  // Nuįma x ašies ticks
+//         display: false
+//       },  
+//     grid: {
+//       display: false
+//     },
+//     //   ticks: {
+//     //     stepSize: 5
+//     },
+//     //   // autoSkip: true, // <--- enable auto-skipping of labels
+//     //   maxTicksLimit: 50, // <--- maximum number of labels to show
+//     // },
+//     y: {
+//       type: 'linear',
+//       grace: '10%'
+//         // max: 5,
+//         // min: 0,
+//         // ticks: {
+//         //     stepSize: 0.1
+//         // }
+//     }
+//   },  
+//   plugins: {
+//     legend: {
+//       display: false
+//     },
+//     // legend: {
+//     //   position: 'top',
+//     // },
+//     // title: {
+//     //   display: true,
+//     // },
+//     annotation: {
+//       annotations: annotations
+//       }
+//     }
+//   };
+//   return {data, options}
+// }
 
 const Filtration = () => {
 
@@ -200,16 +202,16 @@ const Filtration = () => {
     const step = Math.max(1, Math.floor(param.length / 10));
     
     switch (event.keyCode) {
-      case 37: // left arrow key
+      case 37: // left arrow key - atgal
       setParam({ ...param, at: (param.at - step) >= 0 ? param.at - step : 0});
       break;
-      case 38: // up arrow key
+      case 40: // up arrow key - išplečia
       setParam({ ...param, length: (param.length + 100) <= data_rec.length ? param.length + 100 : data_rec.length });
       break;
-      case 39: // right arrow key
+      case 39: // right arrow key - pirmyn
       setParam({ ...param, at: (param.at + step) <= data_rec.length ? param.at + step : param.at });
       break;
-      case 40: // down arrow key
+      case 38: // down arrow key - suglaudžia
       setParam({ ...param, length: Math.max(param.length - 100, 100) });
       break;
       default:
@@ -243,10 +245,14 @@ const Filtration = () => {
     .map((rpeak) => rpeak.annotationValue);
     console.log('annotationVisualValues:', annotationVisualValues);
 
-    const {data, options} = GenerateChartData(idxVisualArray, valueVisualArray, idxVisualRpeaks, annotationVisualValues);
-    const {data: data_flt, options: options_flt} = GenerateChartData(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks, annotationVisualValues);
-    options_flt.scales.x.ticks.display = true;
-    // options_flt.scales.x.ticks.display = false;
+    const noiseVisualAnnotations = [];
+
+    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray, idxVisualRpeaks,
+           annotationVisualValues, noiseVisualAnnotations);
+    const {data: data_flt, options: options_flt} = generateChartConfig(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks,
+           annotationVisualValues,noiseVisualAnnotations);
+    // options_flt.scales.x.ticks.display = true;
+    options_flt.scales.x.ticks.display = false;
 
     return (
       // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
