@@ -109,8 +109,7 @@ const GenerateChartData = (idxArray, valueArray, idxRpeaks, valueRpeaks) => {
 
 const Analysis = () => {
 
-  // const auth = useContext(AuthContext);
-  const auth = "1642627.410";
+  const auth = useContext(AuthContext);
   console.log(auth)
 
   const [param, setParam] = useState({

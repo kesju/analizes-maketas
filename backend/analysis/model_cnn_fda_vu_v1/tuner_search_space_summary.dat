@@ -1,0 +1,102 @@
+Search space summary
+Default search space size: 50
+num_Conv1D_layers (Int)
+{'default': None, 'conditions': [], 'min_value': 1, 'max_value': 15, 'step': 1, 'sampling': None}
+filters_Conv1D_0 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_0 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+activation_Conv1D (Choice)
+{'default': 'elu', 'conditions': [], 'values': ['elu', 'relu', 'tanh', 'sigmoid'], 'ordered': False}
+num_dense_layers (Int)
+{'default': None, 'conditions': [], 'min_value': 1, 'max_value': 15, 'step': 1, 'sampling': None}
+units_dense_0 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+activation_dense (Choice)
+{'default': 'elu', 'conditions': [], 'values': ['elu', 'relu', 'tanh', 'sigmoid'], 'ordered': False}
+learning_rate (Choice)
+{'default': 0.01, 'conditions': [], 'values': [0.01, 0.001, 0.0001], 'ordered': True}
+filters_Conv1D_1 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_1 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_2 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_2 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_3 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_3 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_4 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_4 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_5 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_5 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+units_dense_1 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_2 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_3 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_4 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_5 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_6 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_7 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_8 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_9 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_10 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_11 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_12 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+filters_Conv1D_6 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_6 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_7 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_7 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_8 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_8 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_9 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_9 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_10 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_10 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_11 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_11 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_12 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_12 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+units_dense_13 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+units_dense_14 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+filters_Conv1D_13 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_13 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}
+filters_Conv1D_14 (Int)
+{'default': None, 'conditions': [], 'min_value': 16, 'max_value': 1024, 'step': 32, 'sampling': None}
+kernel_size_Conv1D_14 (Int)
+{'default': None, 'conditions': [], 'min_value': 2, 'max_value': 11, 'step': 2, 'sampling': None}

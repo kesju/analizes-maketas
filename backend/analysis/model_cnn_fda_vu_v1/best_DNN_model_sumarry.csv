@@ -1,0 +1,19 @@
+Conf matrix DNN 
+ [[76907   146    68]
+ [  475   601   181]
+ [  128    37  2319]]
+Cls rep 
+               precision    recall  f1-score   support
+
+         0.0       0.99      1.00      0.99     77121
+         1.0       0.77      0.48      0.59      1257
+         2.0       0.90      0.93      0.92      2484
+
+    accuracy                           0.99     80862
+   macro avg       0.89      0.80      0.83     80862
+weighted avg       0.99      0.99      0.99     80862
+
+Test accuracy DNN:  0.9872004389762878
+Test loss DNN:  0.08228592574596405
+
+

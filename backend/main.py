@@ -52,6 +52,9 @@ db_folder = 'analizes-maketas'
 # Duomenų aplankas
 rec_folder = 'data'
 
+# Analizės rezultatų aplankas
+rsl_folder = 'results'
+
 # Įrašo filtravimui
 fp = {  'type': 'lowcut',
         'method':'butterworth',
@@ -68,6 +71,9 @@ print('\nSkriptas sudaro vietinės ZIVE talpyklos EKG sąrašą')
 
 db_path = Path(Duomenu_aplankas, db_folder, rec_folder) 
 print( 'Duomenų aplankas:', db_path)
+
+rsl_path = Path(Duomenu_aplankas, db_folder, rsl_folder) 
+print( 'Duomenų aplankas:', rsl_path)
 
 df_list = get_list(db_path)
 if (not df_list.empty):
@@ -231,7 +237,6 @@ async def return_props3(fname: str = "1626931.201"):
  return(annot_js)   
  
 
-
 # endpoint nr. 6 uždavus failo vardą fname atiduoda filtruotą EKG įrašą
 
 # @app.get("/filtered/", response_model=List[ItemValue])
@@ -268,9 +273,11 @@ async def return_props3(fname: str = "1626931.201"):
 # Laikinai įdėsiu tik EKG rpeaks, naudosiu Neurokit
 
 @app.get("/analysis/")
-async def return_json(fname: str = "1626931.201"):
-#  1642627.410_rpeaks.json
- with open('1642627.410_rpeaks.json') as f:
+async def return_json(fname: str = "1642627.410"):
+#  fname = "1642627.410_rsl.json"
+ rsl_name = fname + '_rsl.json'   
+ fpath = Path(rsl_path, rsl_name)     
+ with open(fpath) as f:
     data_js = json.load(f)
     # data_js = {
     #     "name": "John",
