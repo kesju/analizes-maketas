@@ -177,8 +177,8 @@ const CompareAnalysis = () => {
           &nbsp;S:{annotationNumbers.S} &nbsp;V:{annotationNumbers.V} &nbsp; U:{annotationNumbers.U} 
           &nbsp;&nbsp;ML:&nbsp;&nbsp; N:{mlAnnotationNumbers.N}
           &nbsp;S:{mlAnnotationNumbers.S} &nbsp;V:{mlAnnotationNumbers.V} &nbsp; U:{mlAnnotationNumbers.U} 
-          <ShowGraph data={data} options={options} width={1200} height={300}/>
-          <ShowGraph data={data_ml} options={options_ml} width={1200} height={300}/>
+          <ShowGraph data={data} options={options} width={1200} height={250}/>
+          <ShowGraph data={data_ml} options={options_ml} width={1200} height={250}/>
       
       </div>
     );
