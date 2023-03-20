@@ -26,10 +26,12 @@ parser.add_argument('--recordingId', metavar='REC_ID', type=str, required=True, 
 parser.add_argument('--rpeakSampleIndexes', metavar='R_PEAK_SAMPLE_INDEXES', type=json.loads, required=False, help='Sample indexes of R-peaks')
 parser.add_argument('--rpeaksOnly', required=False, action="store_true", help='Only discover and return R-peaks in ECG file')
 args = parser.parse_args()
-print('args.fileName:', args.fileName)
-print('args.channelCount:', args.channelCount)
-print('args.recordingId:', args.recordingId)
-print('args.rpeaksOnly:', args.rpeaksOnly)
+
+# Laikinai - derinimui
+# print('args.fileName:', args.fileName)
+# print('args.channelCount:', args.channelCount)
+# print('args.recordingId:', args.recordingId)
+# print('args.rpeaksOnly:', args.rpeaksOnly)
 
 results = {
   'status': {
@@ -112,9 +114,10 @@ try:
     results['speaks'] = None
     results['tpeaks'] = None
 
-  if rpeaks and not args.rpeaksOnly: 
+  if rpeaks and not args.rpeaksOnly:
+    model_dir='analysis/model_cnn_fda_vu_v1' # laikinai - dedant į Zive analysis nereikalingas
     classification, clusterization = classify_clusterise_cnn_fda_vu_v1(zive_read_file_1ch(args.fileName), rpeaks=rpeaks, 
-                                                  model_dir='model_cnn_fda_vu_v1', prediction_labels=['N', 'S', 'V', 'U'])
+                                                  model_dir=model_dir, prediction_labels=['N', 'S', 'V', 'U'])
     results['automatic_classification'] = classification
     # results['automatic_clusterization'] = clusterization # Užblokuota laikinai
     results['ectopic_runs'] = EctopicRunsAnalysis(classification)
@@ -128,9 +131,9 @@ except Exception as error:
 else:
   pass
 
-# print(json.dumps(results)) # Šitą reikia dedant į Zive atstatyti
+# print(json.dumps(results)) # Šitą reikia dedant į Zive atstatyti, laikinai
 
-# Priedas rezultatu įrašymui analizės makete
+# Priedas rezultatu įrašymui analizės makete, laikinai, dedant į Zive - išmesti
 
 # Create a Path object
 p = Path(args.fileName)
@@ -141,7 +144,6 @@ rsl_parent = rsl_path.parent
 rsl_filename = rsl_path.name + '_rsl.json'
 rsl_path = Path(rsl_parent, rsl_filename)
 print(rsl_path)
-
 
 with open(rsl_path, 'w') as f:
     # Write the dictionary to the file as a JSON object
