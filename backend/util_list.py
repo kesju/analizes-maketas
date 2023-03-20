@@ -9,6 +9,14 @@ import numpy as np
 import neurokit2 as nk
 import json
 
+def read_json_file(fpath):
+    try:
+        with open(fpath) as f:
+            data_js = json.load(f)
+            return data_js
+    except FileNotFoundError:
+        return {"error": "File not found"}
+
 def runtime(s):
     hours, remainder = divmod(s, 3600)
     minutes, seconds = divmod(remainder, 60)

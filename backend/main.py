@@ -12,7 +12,7 @@ from neurokit2 import signal_filter
 import numpy as np
 
 import json
-from util_list import collect_list, get_list, zive_read_file_1ch, AnalyseHeartrate
+from util_list import collect_list, get_list, zive_read_file_1ch, AnalyseHeartrate, read_json_file
 
 
 my_os=sys.platform
@@ -227,15 +227,16 @@ async def return_props3(fname: str = "1626931.201"):
 # endpoint nr. 5.1 uždavus failo vardą fname atiduoda EKG įrašo json su gydytojo
 # pūpsnių revizuotomis anotacijomis ir rankinėmis triukšmų  žymėmis  
 
-# @app.get("/record/", response_model=List[ItemValue])
+# @app.get("/annotations/", response_model=List[ItemValue])
 @app.get("/annotations/")
 async def return_props3(fname: str = "1626931.201"):
  fname = fname + '.json';
  fpath = Path(db_path, fname)
- with open(fpath) as f:
-    annot_js = json.load(f)
- return(annot_js)   
- 
+ data = read_json_file(fpath)
+ if "error" in data:
+        return {"error": f"Could not read file '{fpath}'"}
+ else:
+    return data
 
 # endpoint nr. 6 uždavus failo vardą fname atiduoda filtruotą EKG įrašą
 
@@ -273,18 +274,14 @@ async def return_props3(fname: str = "1626931.201"):
 # Laikinai įdėsiu tik EKG rpeaks, naudosiu Neurokit
 
 @app.get("/analysis/")
-async def return_json(fname: str = "1642627.410"):
-#  fname = "1642627.410_rsl.json"
+async def return_json(fname: str = "1626931.201"):
  rsl_name = fname + '_rsl.json'   
  fpath = Path(rsl_path, rsl_name)     
- with open(fpath) as f:
-    data_js = json.load(f)
-    # data_js = {
-    #     "name": "John",
-    #     "age": 30,
-    #     "city": "New York"
-    # };
- return(data_js)
+ data = read_json_file(fpath)
+ if "error" in data:
+        return {"error": f"Could not find file '{fpath}'"}
+ else:
+    return data
 
 # async def return_props3(fname: str = "1633444.221"):
 #  fpath = Path(db_path, fname)   

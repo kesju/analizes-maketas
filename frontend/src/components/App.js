@@ -4,7 +4,7 @@ import EkgGraph from "../pages/EkgGraph"
 import EkgNoises from "../pages/EkgNoises"
 import EkgRpeaks from "../pages/EkgRpeaks"
 import EkgPrm from "../pages/EkgPrm"
-import EkgVal from "../pages/EkgVal"
+import CompareAnalysis from "../pages/CompareAnalysis"
 import Analysis from "../pages/Analysis"
 import Filtration from "../pages/Filtration"
 import Testing from "../pages/Testing"
@@ -117,7 +117,7 @@ function App() {
           <Route path="/" element={ <ControlledSelectionGrid setAuth={changeAuth}/> } />
           <Route path="ekggraph" element={ <EkgGraph/> } />
           <Route path="ekgprm" element={ <EkgPrm/> } />
-          <Route path="ekgvalues" element={ <EkgVal/> } />
+          <Route path="compareanalysis" element={ <CompareAnalysis/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />
           <Route path="analysis" element={ <Analysis/> } />

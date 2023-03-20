@@ -29,6 +29,7 @@ args = parser.parse_args()
 print('args.fileName:', args.fileName)
 print('args.channelCount:', args.channelCount)
 print('args.recordingId:', args.recordingId)
+print('args.rpeaksOnly:', args.rpeaksOnly)
 
 results = {
   'status': {

@@ -2,10 +2,13 @@
 
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
+import {noiseAnnotations} from '../components/utils/noiseAnnotations'
+import {generateChartConfig} from '../components/utils/generateChartConfig'
+import {mlAnnotationCounts} from '../components/utils/mlAnnotationCounts'
+import {annotationCounts} from '../components/utils/annotationCounts'
 import './MyChart.css';
 import "chartjs-plugin-annotation";
 import useAxiosGet from "../components/useAxiosGet"
-import {mlAnnotationCounts} from '../components/utils/mlAnnotationCounts'
 
 import {
   Chart as ChartJS,
@@ -20,6 +23,7 @@ import {
 
 import { Line } from 'react-chartjs-2';
 import annotationPlugin from 'chartjs-plugin-annotation';
+// import { red, yellow } from '@mui/material/colors';
 
 ChartJS.register(
   annotationPlugin,
@@ -32,108 +36,28 @@ ChartJS.register(
   Legend
 );
 
-function generateChartConfig(idxArray, valueArray, idxRpeaks, annotationValues, noiseIntervals) {
-
-  const data = {
-    labels: idxArray,
-    datasets: [{
-    // label: 'įrašas nefiltruotas',
-    fill: false,
-    lineTension: 0.1,
-    borderColor: 'blue',
-    borderWidth: 1, // <--- Line thickness is defined here
-    pointRadius: 0, // <--- Set to 0 to remove markers
-    data: valueArray,
-  }]
-  };      
-
-  const valueRpeaks = [];
-  for (let i = 0; i < idxRpeaks.length; i++) {  
-    valueRpeaks.push(valueArray[idxRpeaks[i]]);        
-  }
-
-  const annotations = [];
-
-  for (let i = 0; i < idxRpeaks.length; i++) {
-  const point = {
-    type: 'point',
-    xValue: idxRpeaks[i],
-    yValue: valueRpeaks[i],
-    radius: 2,
-    pointStyle: 'circle',
-  };
-  annotations.push(point);
-
-  if (annotationValues[i] !== 'N') {
-      const point2 = {
-            type: 'label',
-            xValue: idxRpeaks[i],
-            yValue: valueRpeaks[i],
-            enabled: true,
-            xAdjust: 10, // pixels
-            yAdjust: -10, // pixels
-            content: [annotationValues[i]],
-            font: {
-              size: 14,
-              color: 'red', // set the font color of the label here
-            },
-      };
-      annotations.push(point2);
-    };
-  }
-
-  const options = {
-    responsive: false,
-    maintainAspectRatio: true,
-    animation: false, // <--- disable animation
-    
-    scales: {
-      x: {
-        ticks: {  
-          display: true  // Nuįma x ašies ticks
-        },  
-        grid: {
-          display: false // Nuįma x ašies tinkl1ą
-        },
-      },
-      y: {
-        type: 'linear',
-        grace: '10%'
-      }
-    },  
-    plugins: {
-      legend: {
-        display: false,
-      //   position: 'top',
-      },
-      title: {
-        display: true,
-      },
-    }
-  };
-
-  const yScaleConfig = options.scales.y;
-
-  for (let i = 0; i < noiseIntervals.length; i++) {
-    const box = {
-      type: 'box',
-      xMin: noiseIntervals[i].startIndex,
-      xMax: noiseIntervals[i].endIndex,
-      yMin: yScaleConfig.min,
-      yMax: yScaleConfig.max,
-      backgroundColor: 'rgba(255, 0, 0, 0.2)'
-    }
-    annotations.push(box);  
-  }
-
-  options.plugins.annotation = {annotations:annotations};
-
-  return {data, options}
-}
-
-const Analysis = () => {
+const ShowGraph = ({data, options, width, height}) => {
 
   const auth = useContext(AuthContext);
+
+    if (auth === '9999999.999') { 
+      return(
+        <h1>Pasirink įrašą!</h1>
+      ); 
+    } else { 
+      return(
+        // <div className="my-chart-container">
+        <div>
+        <Line width={width} height={height} options={options} data={data} />;
+        </div>
+      );
+  } 
+}
+
+const CompareAnalysis = () => {
+
+  const auth = useContext(AuthContext);
+  // const auth = "1642627.410";
   console.log(auth)
 
   const [param, setParam] = useState({
@@ -149,7 +73,15 @@ const Analysis = () => {
             }
           }
   );
-
+          
+  const { data: annot_js, error: error_js, loaded: loaded_js } = useAxiosGet(
+    "http://localhost:8000/annotations",
+            {
+              params: {
+                fname:auth,
+              }
+            }
+  );
 
   const { data: data_rsl, error: error_rsl, loaded: loaded_rsl } = useAxiosGet(
     "http://localhost:8000/analysis",
@@ -186,17 +118,28 @@ const Analysis = () => {
       }
     }
   
-  if (loaded_rec && loaded_rsl) {
-    
-    if (data_rsl.hasOwnProperty("error")) {
-        return <span>{data_rsl.error}</span>;
-    }
-        
+  if (loaded_rec && loaded_js && loaded_rsl) {
+
     const segmentData = data_rec.slice(param.at, param.at + param.length);
     // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
-    // console.log('data_rsl:', data_rsl)
+ 
+    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    .map((rpeak) => rpeak.sampleIndex - param.at);
+    // console.log(idxVisualRpeaks);
+  
+    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    .map((rpeak) => rpeak.annotationValue);
+    // console.log(annotationVisualValues);
+
+    const noiseIntervals = noiseAnnotations(annot_js.noises, param.at, param.length);
+
+    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
+       idxVisualRpeaks, annotationVisualValues, noiseIntervals);
+    
+    const annotationNumbers = annotationCounts(annot_js.rpeaks);
+    
 
     const idxMlVisualRpeaks = data_rsl.automatic_classification.filter((rpeak) => rpeak.sample >= param.at && rpeak.sample < param.at + param.length)
     .map((rpeak) => rpeak.sample - param.at);
@@ -207,12 +150,15 @@ const Analysis = () => {
     // console.log(annotationVisualValues);
     
     const noiseMlIntervals = [];
-    const mlAnnotationNumbers = mlAnnotationCounts(data_rsl.automatic_classification);
-    // console.log('annotationNumbers:', annotationNumbers)
-    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray, idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
 
+    const {data:data_ml, options:options_ml} = generateChartConfig(idxVisualArray, valueVisualArray,
+      idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
+    options_ml.scales.x.ticks.display = false;
+    
+    const mlAnnotationNumbers = mlAnnotationCounts(data_rsl.automatic_classification);
+    
+    
     return (
-      // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
       <div onKeyDown={handleKeyDown} tabIndex="0" >
         
         {/* <form> */}
@@ -225,10 +171,15 @@ const Analysis = () => {
             length:
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
-          &nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;
-          Reikšmių: {data_rec.length} &nbsp;&nbsp;&nbsp; ML annot.:&nbsp;&nbsp; N:{mlAnnotationNumbers.N}
-          &nbsp;S:{mlAnnotationNumbers.S} &nbsp;V:{mlAnnotationNumbers.V} &nbsp; U:{mlAnnotationNumbers.U}
-        <Line width={1200} height={400} options={options} data={data} />;
+          &nbsp;&nbsp;&nbsp;Failas: {auth}&nbsp;&nbsp;
+          &nbsp;Reikšmių: {data_rec.length} &nbsp;Viršuje - anot.
+          &nbsp;Annot.:&nbsp;&nbsp; N:{annotationNumbers.N}
+          &nbsp;S:{annotationNumbers.S} &nbsp;V:{annotationNumbers.V} &nbsp; U:{annotationNumbers.U} 
+          &nbsp;&nbsp;ML:&nbsp;&nbsp; N:{mlAnnotationNumbers.N}
+          &nbsp;S:{mlAnnotationNumbers.S} &nbsp;V:{mlAnnotationNumbers.V} &nbsp; U:{mlAnnotationNumbers.U} 
+          <ShowGraph data={data} options={options} width={1200} height={300}/>
+          <ShowGraph data={data_ml} options={options_ml} width={1200} height={300}/>
+      
       </div>
     );
   }
@@ -236,4 +187,4 @@ const Analysis = () => {
   return <span>Loading...</span>;
 };
 
-export default Analysis
+export default CompareAnalysis

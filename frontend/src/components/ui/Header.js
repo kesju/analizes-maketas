@@ -15,8 +15,8 @@ export default function Header(props) {
                     <Tab component={Link} to="/" label="Sąrašas" />
                     <Tab component={Link} to="EkgGraph" label="Anot.įrašas" />
                     <Tab component={Link} to="EkgPrm" label="Parametrai" />
-                    <Tab component={Link} to="Analysis" label="Orig.analizė" />
-                    <Tab component={Link} to="EkgValues" label="Sul.analiz." />
+                    <Tab component={Link} to="Analysis" label="Aut.analizė" />
+                    <Tab component={Link} to="CompareAnalysis" label="Sul.analiz." />
                     <Tab component={Link} to="EkgRpeaks" label="Sul.rpeaks" />
                     <Tab component={Link} to="EkgNoises" label="Sul.triukšm." />
                     <Tab component={Link} to="Filtration" label="Sul.filtrav." />
