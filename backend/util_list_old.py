@@ -9,11 +9,6 @@ import numpy as np
 import neurokit2 as nk
 import json
 
-def runtime(s):
-    hours, remainder = divmod(s, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    print('Runtime: {:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)))
-
 def zive_read_file_1ch(filename):
     f = open(filename, "r")
     a = np.fromfile(f, dtype=np.dtype('>i4'))
@@ -43,24 +38,6 @@ def add_comments(df_list, df_comments):
 
     return merged
 
-def collect_filenames(db_path):
-    # - surenkame aplankų ir failų sąrašą
-    # https://careerkarma.com/blog/python-list-files-in-directory/
-
-    # Walking a directory tree and printing the names of the directories and files
-    filepaths =[]
-
-    # Surandame buferyje visus failus, kurie neturi extension json
-    for dirpath, dirnames, files in os.walk(db_path):
-        # https://linuxhint.com/python-os-walk-example/
-        # print(dirpath, dirnames, files)
-        for file_name in files:
-            root, extension = os.path.splitext(file_name)
-            if (extension == '.json' or extension == '.csv'):
-                continue
-            else:
-                filepaths.append(str(file_name))
-    return filepaths
 
 def collect_list(db_path):
 
@@ -87,15 +64,26 @@ def collect_list(db_path):
     filepaths =[]
     new_files = 0
 
-    # # Surandame buferyje visus failus, kurie neturi extension json
-    # for dirpath, dirnames, files in os.walk(db_path):
-    filenames = collect_filenames(db_path)
+    # Surandame buferyje visus failus, kurie neturi extension json
+    for dirpath, dirnames, files in os.walk(db_path):
+        # https://linuxhint.com/python-os-walk-example/
+        # print(dirpath, dirnames, files)
+        for file_name in files:
+            root, extension = os.path.splitext(file_name)
+            if (extension == '.json' or extension == '.csv'):
+                continue
+            else:
+                # print(file_name)
+                filepath = Path(dirpath,file_name)
+                filepaths.append(str(filepath))
 
-    # Einame per visus įrašus, įtraukiame įrašo parametrus į sąrašą
-    for filename in filenames:
+    # Einame per visus įrašus, įtraukiame į sąrašą
+    for filepath in filepaths:
+        filename = os.path.basename(filepath)
+        # print("filename:", filename)
         timestamp = int(filename.replace('.', ''))
-        filename_js = filename + '.json'    
-        filepath = Path(db_path, filename_js) 
+            
+        filepath = Path(filepath + '.json')
         with open(filepath,'r', encoding='UTF-8', errors = 'ignore') as f:
             data = json.loads(f.read())
         dict_annot = data['rpeakAnnotationCounts']
