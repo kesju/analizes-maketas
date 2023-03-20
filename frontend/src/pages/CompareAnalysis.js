@@ -3,7 +3,7 @@
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
-import {generateChartConfig} from '../components/utils/generateChartConfig'
+// import {generateChartConfig} from '../components/utils/generateChartConfig'
 import {mlAnnotationCounts} from '../components/utils/mlAnnotationCounts'
 import {annotationCounts} from '../components/utils/annotationCounts'
 import './MyChart.css';
@@ -35,6 +35,126 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+
+function dynParamConfig(pointRadius, xAdjust, yAdjust) {
+
+ const dynParam = {
+  pointRadius: pointRadius,
+  xAdjustLabel: xAdjust,
+  yAdjustLabel: yAdjust
+ } 
+ return dynParam 
+}
+
+function generateChartConfigDyn(idxArray, valueArray, idxRpeaks, annotationValues, noiseIntervals, dynParam) {
+
+  const data = {
+    labels: idxArray,
+    datasets: [{
+    // label: 'įrašas nefiltruotas',
+    fill: false,
+    lineTension: 0.1,
+    borderColor: 'blue',
+    borderWidth: 1, // <--- Line thickness is defined here
+    pointRadius: 0, // <--- Set to 0 to remove markers
+    data: valueArray,
+  }]
+  };      
+
+  const valueRpeaks = [];
+  for (let i = 0; i < idxRpeaks.length; i++) {  
+    valueRpeaks.push(valueArray[idxRpeaks[i]]);        
+  }
+
+  const annotations = [];
+
+  for (let i = 0; i < idxRpeaks.length; i++) {
+  const point = {
+    type: 'point',
+    xValue: idxRpeaks[i],
+    yValue: valueRpeaks[i],
+    radius: dynParam.pointRadius,
+    pointStyle: 'circle',
+  };
+  annotations.push(point);
+
+  if (annotationValues[i] !== 'N') {
+      const point2 = {
+            type: 'label',
+            xValue: idxRpeaks[i],
+            yValue: valueRpeaks[i],
+            enabled: true,
+            xAdjust: dynParam.xAdjustLabel, // pixels
+            yAdjust: dynParam.yAdjustLabel, // pixels
+            content: [annotationValues[i]],
+            font: {
+              size: 14,
+              color: 'red', // set the font color of the label here
+            },
+      };
+      annotations.push(point2);
+    };
+  }
+
+  const options = {
+    responsive: false,
+    maintainAspectRatio: true,
+    animation: false, // <--- disable animation
+    
+    scales: {
+      x: {
+        ticks: {  // Nuįma x ašies ticks
+          display: true
+        },  
+      grid: {
+        display: false
+      },
+      //   ticks: {
+      //     stepSize: 5
+      },
+      //   // autoSkip: true, // <--- enable auto-skipping of labels
+      //   maxTicksLimit: 50, // <--- maximum number of labels to show
+      // },
+      y: {
+        type: 'linear',
+        grace: '10%'
+          // max: 5,
+          // min: 0,
+          // ticks: {
+          //     stepSize: 0.1
+          // }
+
+      }
+    },  
+    plugins: {
+      legend: {
+        display: false,
+      //   position: 'top',
+      },
+      title: {
+        display: true,
+      },
+    }
+  };
+
+  const yScaleConfig = options.scales.y;
+
+  for (let i = 0; i < noiseIntervals.length; i++) {
+    const box = {
+      type: 'box',
+      xMin: noiseIntervals[i].startIndex,
+      xMax: noiseIntervals[i].endIndex,
+      yMin: yScaleConfig.min,
+      yMax: yScaleConfig.max,
+      backgroundColor: 'rgba(255, 0, 0, 0.2)'
+    }
+    annotations.push(box);  
+  }
+
+  options.plugins.annotation = {annotations:annotations};
+
+  return {data, options}
+}
 
 const ShowGraph = ({data, options, width, height}) => {
 
@@ -135,8 +255,9 @@ const CompareAnalysis = () => {
 
     const noiseIntervals = noiseAnnotations(annot_js.noises, param.at, param.length);
 
-    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
-       idxVisualRpeaks, annotationVisualValues, noiseIntervals);
+    const dynParam = dynParamConfig(2, -10, -10);
+    const {data, options} = generateChartConfigDyn(idxVisualArray, valueVisualArray,
+       idxVisualRpeaks, annotationVisualValues, noiseIntervals, dynParam);
     
     const annotationNumbers = annotationCounts(annot_js.rpeaks);
     
@@ -151,8 +272,9 @@ const CompareAnalysis = () => {
     
     const noiseMlIntervals = [];
 
-    const {data:data_ml, options:options_ml} = generateChartConfig(idxVisualArray, valueVisualArray,
-      idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
+    const dynParamMl = dynParamConfig(2, 10, -10);
+    const {data:data_ml, options:options_ml} = generateChartConfigDyn(idxVisualArray, valueVisualArray,
+      idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals,dynParamMl);
     options_ml.scales.x.ticks.display = false;
     
     const mlAnnotationNumbers = mlAnnotationCounts(data_rsl.automatic_classification);

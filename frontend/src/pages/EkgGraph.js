@@ -3,6 +3,7 @@
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
+import {annotationCounts} from '../components/utils/annotationCounts'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
 import './MyChart.css';
 import "chartjs-plugin-annotation";
@@ -121,10 +122,12 @@ const EkgGraph = () => {
     .map((rpeak) => rpeak.annotationValue);
     // console.log(annotationVisualValues);
 
-  const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
+    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
 
-     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
+    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
+    
+    const annotationNumbers = annotationCounts(annot_js.rpeaks);
     
     return (
       <div onKeyDown={handleKeyDown} tabIndex="0" >
@@ -139,7 +142,10 @@ const EkgGraph = () => {
             length:
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          Reikšmių: {data_rec.length}&nbsp;&nbsp;&nbsp;Rankomis anotuotas:
+          &nbsp;&nbsp;&nbsp; N:{annotationNumbers.N}
+          &nbsp;S:{annotationNumbers.S} &nbsp;V:{annotationNumbers.V} &nbsp; U:{annotationNumbers.U}   
           <ShowGraph data={data} options={options} width={1200} height={400}/>
       
       </div>
