@@ -1,3 +1,13 @@
 .my-chart-container .chartjs-render-monitor .chart-legend li span {
   display: none;
 }
+
+.window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+}

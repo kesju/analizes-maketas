@@ -1,6 +1,6 @@
 // Čia išveda originalaus EKG įrašo grafiką
 
-import {useState, useContext, React} from 'react';
+import {useState, useContext, useEffect, React} from 'react';
 import AuthContext from '../components/AuthContext'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
@@ -58,6 +58,9 @@ const EkgGraph = () => {
   // const auth = "1642627.410";
   console.log(auth)
 
+  const [showWindow, setShowWindow] = useState(false);
+  const [windowValues, setWindowValues] = useState(null);
+
   const [param, setParam] = useState({
     at: 0,
     length: 1000,
@@ -80,6 +83,34 @@ const EkgGraph = () => {
               }
             }
   );
+
+  const { data: data_prm, error: error_prm, loaded: loaded_prm } = useAxiosGet(
+    "http://localhost:8000/ekgprm",
+          {
+            params: {
+              fname:auth,
+            }
+          }
+  );
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.ctrlKey && event.key === "m") {
+        setShowWindow(true);
+        setWindowValues('Langas vaizdavimui');
+      } else {
+        setShowWindow(false);
+        setWindowValues(null);
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+
+
+
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -107,7 +138,7 @@ const EkgGraph = () => {
       }
     }
   
-  if (loaded_rec && loaded_js) {
+  if (loaded_rec && loaded_js && loaded_prm) {
     const segmentData = data_rec.slice(param.at, param.at + param.length);
     // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
@@ -142,6 +173,22 @@ const EkgGraph = () => {
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>
       
+          {showWindow && (
+            <div className="window">
+               <ul>
+           <h1>File Name: {data_prm.file_name}</h1>
+           <li>N: {data_prm.N} S: {data_prm.S} V: {data_prm.V} U: {data_prm.U}</li>
+           <li>Tr: {data_prm.Tr}</li>
+           <li>flag: {data_prm.flag}</li>
+           <li>incl: {data_prm.incl}</li>
+           <li>comment: {data_prm.comment}</li>
+           {/* <li>recorded_at: {date_at}</li> */}
+        </ul>
+            { 'render the values to display'}
+        </div>
+      )}
+
+
       </div>
     );
   }
