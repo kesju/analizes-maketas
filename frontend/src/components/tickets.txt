@@ -12,4 +12,4 @@ Analogiškai Sul.filtr,  sul.analiz, sul.triukšm.  - atlikta
 
 6. Įdėti Alert su įrašo parametrais - window
 
-7. Iškelti duomenis už scriptų
+7. Iškelti duomenis už scriptų - atlikta
