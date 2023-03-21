@@ -143,7 +143,7 @@ const EkgGraph = () => {
             <input type="number" name="length" value={param.length} onChange={handleInputChange} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          Reikšmių: {data_rec.length}&nbsp;&nbsp;&nbsp;Rankomis anotuotas:
+          Reikšmių: {data_rec.length}&nbsp;&nbsp;&nbsp;Rank. anot.:
           &nbsp;&nbsp;&nbsp; N:{annotationNumbers.N}
           &nbsp;S:{annotationNumbers.S} &nbsp;V:{annotationNumbers.V} &nbsp; U:{annotationNumbers.U}   
           <ShowGraph data={data} options={options} width={1200} height={400}/>

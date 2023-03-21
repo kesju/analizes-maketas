@@ -36,7 +36,7 @@ if OS == 'Windows':
     Duomenu_aplankas = 'D:\\DI'   # variantas: Windows
 else:
     # Duomenu_aplankas = '/home/kesju/DI'   # arba variantas: UBUNTU, be Docker
-    Duomenu_aplankas = '/home/kesju/DI/MAKETAS'   # arba variantas: UBUNTU, be Docker
+    Duomenu_aplankas = '/home/kesju/DI'   # arba variantas: UBUNTU, be Docker
 
 # jei variantas Docker pasirenkame:
 # Duomenu_aplankas = '/Data/MIT&ZIVE'
@@ -47,7 +47,7 @@ pd.set_option('display.width', 1000)
 
 # Vietinės talpyklos aplankas
 # db_folder = 'DUOM_2022_RUDUO_2'
-db_folder = 'analizes-maketas'
+db_folder = 'MAKETAS'
 
 # Duomenų aplankas
 rec_folder = 'data'
