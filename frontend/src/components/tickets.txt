@@ -10,6 +10,6 @@ Analogiškai Sul.filtr,  sul.analiz, sul.triukšm.  - atlikta
 
 5. Įdėti sąraše paiešką pagal file_name
 
-6. Įdėti Alert su įrašo parametrais - window
+6. Įdėti Alert su įrašo parametrais - window - atlikta, dar reiktų praplėsti
 
 7. Iškelti duomenis už scriptų - atlikta
