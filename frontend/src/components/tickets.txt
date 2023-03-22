@@ -8,4 +8,4 @@ Analogiškai Sul.filtr,  sul.analiz, sul.triukšm.
 
 4. įdėti param.at, param.length - į AuthContext 
 
-5. 
+5. Cia bus context
