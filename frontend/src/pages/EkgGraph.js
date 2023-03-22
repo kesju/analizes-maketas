@@ -1,4 +1,4 @@
-// Čia išveda originalaus EKG įrašo grafiką
+// Čia išveda originalaus EKG įrašo grafiką: yra funkcija window, kuriama - context ir paieska
 
 import {useState, useContext, useEffect, React} from 'react';
 import AuthContext from '../components/AuthContext'
