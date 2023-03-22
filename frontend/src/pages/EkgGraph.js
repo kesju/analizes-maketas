@@ -1,4 +1,4 @@
-// Čia išveda originalaus EKG įrašo grafiką
+// Čia išveda originalaus EKG įrašo grafiką - pagrindinis variantas
 
 import {useState, useContext, React} from 'react';
 import AuthContext from '../components/AuthContext'
