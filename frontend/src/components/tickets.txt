@@ -4,6 +4,8 @@ Analogiškai Sul.filtr,  sul.analiz, sul.triukšm.
 
 2. Apkeisti vietomis  visur prapletimo ir suglaudinimo klavisus - atlikta
 
-3. Ideti triuksmu charakter. - į sąrašą (kiek intervalų) ir į parametrus
+3. Ideti triuksmu charakter. - į sąrašą (kiek intervalų) ir į parametrus - atlikta
 
 4. įdėti param.at, param.length - į AuthContext 
+
+5. 
