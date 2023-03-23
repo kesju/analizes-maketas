@@ -111,9 +111,6 @@ const EkgGraph = () => {
   }, []);
 
 
-
-
-
   function handleInputChange(event) {
     const { name, value } = event.target;
     setParam({ ...param, [name]: parseInt(value) }); // include atStep in updated state
@@ -154,16 +151,15 @@ const EkgGraph = () => {
     .map((rpeak) => rpeak.annotationValue);
     // console.log(annotationVisualValues);
 
-  const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
+    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
 
-     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
-       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
-    
-       console.log('showWindow:',showWindow)
+    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
+      idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
+  
+    console.log('showWindow:',showWindow)
           
     return (
       <div onKeyDown={handleKeyDown} tabIndex="0" >
-        
         {/* <form> */}
           <label>
             at:
