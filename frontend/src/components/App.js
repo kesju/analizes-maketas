@@ -1,6 +1,6 @@
 import {useContext, useState, React} from 'react';
 import { Routes, Route } from "react-router-dom"
-// import EkgGraph from "../pages/EkgGraph"
+import EkgGraph from "../pages/EkgGraph"
 // import EkgNoises from "../pages/EkgNoises"
 // import EkgRpeaks from "../pages/EkgRpeaks"
 // import EkgPrm from "../pages/EkgPrm"
@@ -55,11 +55,17 @@ function ControlledSelectionGrid({ data_lst }) {
         console.log('segmParam:', segmParam)
         
         const [rows, setRows] = useState(data_lst.map((item, index) => ({
-            id: index + 1,
-            col1: index + 1,
-            col2: item.file_name,
-            col3: item.recordingId,
-            col4: item.userId,
+          id: index + 1,
+          col1: index+1,
+          col2: item.file_name,
+          col3: item.recordingId,
+          col4: item.userId,
+          col5: item.S,
+          col6: item.V,
+          col7: item.Tr,
+          col8: item.incl,
+          col9: item.flag,
+          col10: item.comment,
           })));
         
         
@@ -82,11 +88,17 @@ function ControlledSelectionGrid({ data_lst }) {
             setSearchQuery(query);
             const filteredRows = data_lst.filter((item) => item.file_name.includes(query));
             setRows(filteredRows.map((item, index) => ({
-                id: index + 1,
-                col1: index + 1,
-                col2: item.file_name,
-                col3: item.recordingId,
-                col4: item.userId,
+              id: index + 1,
+              col1: index+1,
+              col2: item.file_name,
+              col3: item.recordingId,
+              col4: item.userId,
+              col5: item.S,
+              col6: item.V,
+              col7: item.Tr,
+              col8: item.incl,
+              col9: item.flag,
+              col10: item.comment,
             })));
         };
         
@@ -100,8 +112,7 @@ function ControlledSelectionGrid({ data_lst }) {
                 disableSelectionOnClick={true}
                 onRowClick={onRowSelect}
             />
-                {/* <h3> TestGrid &nbsp;&nbsp;fname: {segmParam.fname} &nbsp;at:{segmParam.param.at}  &nbsp;length:{segmParam.param.length}</h3>
-                <TestKbd /> */}
+                <h4>&nbsp;&nbsp;fname: {segmParam.fname} &nbsp;at:{segmParam.param.at}  &nbsp;length:{segmParam.param.length}</h4>
             </div>
         );
 }
@@ -129,10 +140,9 @@ function App() {
       }}>
       <Header></Header>
         <Routes>
-          {/* <Route path="/" element={ <ControlledSelectionGrid setAuth={changeAuth}/> } /> */}
           <Route path="/" element={ <GridShow /> } />
-          {/* <Route path="ekggraph" element={ <EkgGraph/> } />
-          <Route path="ekgprm" element={ <EkgPrm/> } />
+          <Route path="ekggraph" element={ <EkgGraph/> } />
+          {/*<Route path="ekgprm" element={ <EkgPrm/> } />
           <Route path="compareanalysis" element={ <CompareAnalysis/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />
