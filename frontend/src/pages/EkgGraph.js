@@ -95,14 +95,16 @@ const EkgGraph = () => {
 
   useEffect(() => {
     function handleKeyDown(event) {
-      if (event.ctrlKey && event.key === "m") {
+      if (event.ctrlKey && event.key === 'v') {
         setShowWindow(true);
         setWindowValues('Langas vaizdavimui');
       } else {
         setShowWindow(false);
+        // setShowWindow(true);
         setWindowValues(null);
       }
     }
+    // console.log('showWindow:',showWindow)
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
@@ -157,6 +159,8 @@ const EkgGraph = () => {
      const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
     
+       console.log('showWindow:',showWindow)
+          
     return (
       <div onKeyDown={handleKeyDown} tabIndex="0" >
         
@@ -182,7 +186,6 @@ const EkgGraph = () => {
            <li>flag: {data_prm.flag}</li>
            <li>incl: {data_prm.incl}</li>
            <li>comment: {data_prm.comment}</li>
-           {/* <li>recorded_at: {date_at}</li> */}
         </ul>
             { 'render the values to display'}
         </div>
