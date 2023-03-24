@@ -10,6 +10,8 @@ Analogiškai Sul.filtr,  sul.analiz, sul.triukšm. - atlikta
 
 5. Pradinių salygų atstatymas nuskaičius naują įrašą - atlikta
 
-6. Iššokančio lango su parametrais iššokimas - pradėta 
+6. Iššokančio lango su parametrais iššokimas - atlikta
+
+7. Į filtravimą ir analizės sulyginimą įdėti anotuotus triukšmo langus
 
 
