@@ -1,18 +1,16 @@
 //  Parodo pagrindinę informaciją apie ekstrasistoles (iš json)
 
 import {useContext, React} from 'react';
-import AuthContext from '../components/AuthContext';
 import useAxiosGet from "../components/useAxiosGet";
+import SegmParamContext from '../components/SegmParamContext'
+
 
 const ShowPrm = ({prm}) => {
-    const auth = useContext(AuthContext);
 
-    if (auth === '9999999.999') { 
-      return(
-        <h1>Pasirink įrašą!</h1>
-      ); 
-    } else { 
-      return(
+    // const fname = useContext(SegmParamContext);
+    // const {segmParam, setSegmParam} = useContext(SegmParamContext);
+
+    return(
         <ul>
            <h1>File Name: {prm.file_name},  įrašo parametrai:</h1>
            <li>UserId: {prm.userId}</li>
@@ -28,8 +26,7 @@ const ShowPrm = ({prm}) => {
            {/* <li>recorded_at: {date_at}</li> */}
         </ul>
         );
-      } 
-}
+    } 
 
 function MyAnnotations(props) {
   const {annotation, data } = props;
@@ -73,17 +70,18 @@ function MyNoises(props) {
     );
 }
 
-const EkgPrm = () => {
-    const auth = useContext(AuthContext);
-
-    // const [prm, setPrm] = useState({});
+const EkgPrmShow = () => {
+    // const {fname} = useContext(SegmParamContext);
+    const {segmParam, setSegmParam} = useContext(SegmParamContext);
+    
+       // const [prm, setPrm] = useState({});
     // const [error, setError] = useState("");
 
     const { data: data_prm, error: error_prm, loaded: loaded_prm } = useAxiosGet(
       "http://localhost:8000/ekgprm",
             {
               params: {
-                fname:auth,
+                fname:segmParam.fname,
               }
             }
     );
@@ -92,7 +90,7 @@ const EkgPrm = () => {
       "http://localhost:8000/annotations",
               {
                 params: {
-                  fname:auth,
+                  fname:segmParam.fname,
                 }
               }
     );
@@ -119,4 +117,23 @@ const EkgPrm = () => {
     return <span>Loading...</span>;
 }
 
+const EkgPrm = () => {
+  // const {fname} = useContext(SegmParamContext);
+  const {segmParam, setSegmParam} = useContext(SegmParamContext);
+  
+  console.log("segmParam.fname:", segmParam.fname)
+  if (segmParam.fname === '9999999.999') { 
+    return(
+      <div>
+      <h1>Pasirink įrašą!</h1>
+      </div>
+    ); 
+  } else { 
+    return(
+      <div>
+      <EkgPrmShow />
+      </div>
+    );
+  }
+}
 export default EkgPrm;

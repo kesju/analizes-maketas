@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom"
 import EkgGraph from "../pages/EkgGraph"
 // import EkgNoises from "../pages/EkgNoises"
 // import EkgRpeaks from "../pages/EkgRpeaks"
-// import EkgPrm from "../pages/EkgPrm"
+import EkgPrm from "../pages/EkgPrm"
 // import CompareAnalysis from "../pages/CompareAnalysis"
 // import Analysis from "../pages/Analysis"
 // import Filtration from "../pages/Filtration"
@@ -130,10 +130,10 @@ function App() {
   //   <SegmParamContext.Provider value={value}>{children}</SegmParamContext.Provider>
   // );
   
-  const initialValues = { at: 0, length: 1000 };
+  const initialValues = { fname: '9999999.999', at: 0, length: 1000 };
   
   const [segmParam, setSegmParam] = useState({
-    fname:'9999999.999',
+    fname: initialValues.fname,
     at: initialValues.at,
     length: initialValues.length
   });
@@ -149,8 +149,8 @@ function App() {
         <Routes>
           <Route path="/" element={ <GridShow initialValues = {initialValues}/> } />
           <Route path="ekggraph" element={ <EkgGraph/> } />
-          {/*<Route path="ekgprm" element={ <EkgPrm/> } />
-          <Route path="compareanalysis" element={ <CompareAnalysis/> } />
+         <Route path="ekgprm" element={ <EkgPrm/> } />
+           {/*<Route path="compareanalysis" element={ <CompareAnalysis/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />
           <Route path="analysis" element={ <Analysis/> } />
