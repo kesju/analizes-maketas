@@ -127,18 +127,21 @@ const EkgGraph = () => {
   function handleArrowKey(event) {
     const step = Math.max(1, Math.floor(segmParam.param.length / 10));
     
+    console.log("KLAVISO PASPAUDIMAS", event.keyCode)
+    console.log("step", step)
+
     switch (event.keyCode) {
       case 37: // left arrow key - atgal
-      setSegmParam({ ...segmParam, at: (segmParam.param.at - step) >= 0 ? segmParam.param.at - step : 0});
+      setSegmParam({ ...segmParam.param, at: (segmParam.param.at - step) >= 0 ? segmParam.param.at - step : 0});
       break;
       case 40: // up arrow key - išplečia
-      setSegmParam({ ...segmParam, length: (segmParam.param.length + 100) <= data_rec.length ? segmParam.param.length + 100 : data_rec.length });
+      setSegmParam({ ...segmParam.param, length: (segmParam.param.length + 100) <= data_rec.length ? segmParam.param.length + 100 : data_rec.length });
       break;
       case 39: // right arrow key - pirmyn
-      setSegmParam({ ...segmParam, at: (segmParam.param.at + step) <= data_rec.length ? segmParam.param.at + step : segmParam.param.at });
+      setSegmParam({ ...segmParam.param, at: (segmParam.param.at + step) <= data_rec.length ? segmParam.param.at + step : segmParam.param.at });
       break;
       case 38: // down arrow key - suglaudžia
-      setSegmParam({ ...segmParam, length: Math.max(segmParam.param.length - 100, 100) });
+      setSegmParam({ ...segmParam.param, length: Math.max(segmParam.param.length - 100, 100) });
       break;
       default:
         break;

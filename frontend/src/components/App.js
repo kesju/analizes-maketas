@@ -119,9 +119,9 @@ function ControlledSelectionGrid({ data_lst }) {
 
 function App() {
 
-  // const SegmParamProvider = ({ children, value }) => (
-  //   <SegmParamContext.Provider value={value}>{children}</SegmParamContext.Provider>
-  // );
+  const SegmParamProvider = ({ children, value }) => (
+    <SegmParamContext.Provider value={value}>{children}</SegmParamContext.Provider>
+  );
 
   const [segmParam, setSegmParam] = useState({
     fname:'9999999.999',
@@ -138,6 +138,7 @@ function App() {
         segmParam,
         setSegmParam
       }}>
+
       <Header></Header>
         <Routes>
           <Route path="/" element={ <GridShow /> } />
