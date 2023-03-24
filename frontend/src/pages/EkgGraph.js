@@ -162,6 +162,7 @@ const EkgGraphShow = () => {
             length:
             <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />
           </label>
+          
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>
       
