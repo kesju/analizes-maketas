@@ -37,7 +37,6 @@ ChartJS.register(
 const ShowGraph = ({data, options, width, height}) => {
   
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-  // const fname = useContext(AuthContext);
 
     if (segmParam.fname === '9999999.999') { 
       return(
@@ -168,12 +167,10 @@ const EkgGraph = () => {
           
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >
-        {/* <form> */}
           <label>
             at:
             <input type="number" name="at" value={segmParam.at} onChange={handleInputChange} />
           </label>
-          {/* <br /> */}
           <label>
             length:
             <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />
