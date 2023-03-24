@@ -44,18 +44,53 @@ const ShowGraph = ({data, options, width, height}) => {
       );
   } 
 
+  function MyAnnotations(props) {
+    const {annotation, data } = props;
+    
+    if (data.length === 0) {
+      return <div>&nbsp;{annotation}: nėra</div>;
+    }
+  
+    return (
+      <div>
+        <span >&nbsp;{annotation}: </span>
+        {data.map((element, index) => (
+          <span key={index}>
+          {`${element.sampleIndex}`}
+          {index < data.length - 1 ? ", " : ""}
+          </span>
+        ))}
+      </div>
+    );
+}
+
+function MyNoises(props) {
+  const {noiseAnnotations} = props;
+  
+  if (noiseAnnotations.length === 0) {
+    return <div>&nbsp;Pažymėtų triukšmų nėra</div>;
+  }
+
+  return (
+    <div>  
+       <div>
+        <>Pažymėtų triukšmų intervalų: {noiseAnnotations.length} </>
+       </div>
+        {noiseAnnotations.map((noise, index) => (
+          <span key={index}>
+            {`(${noise.startIndex}, ${noise.endIndex})`}
+            {index < noiseAnnotations.length - 1 ? ", " : ""}
+          </span>
+        ))}
+      </div>
+    );
+}
+
 const EkgGraphShow = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-  console.log('segmParam:', segmParam.fname, segmParam.at, segmParam.length)
-
   const [showWindow, setShowWindow] = useState(false);
 
-  // const [param, setParam] = useState({
-  //   at: 0,
-  //   length: 1000,
-  // })
-  
   const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
     "http://localhost:8000/record",
           {
@@ -128,11 +163,14 @@ const EkgGraphShow = () => {
     }
   
   if (loaded_rec && loaded_js && loaded_prm) {
+    
+    // Įrašo segmento duomenys 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
     // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
- 
+    
+    // rpeaks
     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
     // console.log(idxVisualRpeaks);
@@ -141,13 +179,17 @@ const EkgGraphShow = () => {
     .map((rpeak) => rpeak.annotationValue);
     // console.log(annotationVisualValues);
 
+    // noises
     const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
 
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
   
-    console.log('showWindow:',showWindow)
-          
+    // duomenys iššokančiam langui  
+    const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
+    const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V'); 
+    
+
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >
           <label>
@@ -172,6 +214,9 @@ const EkgGraphShow = () => {
            <li>incl: {data_prm.incl}</li>
            <li>comment: {data_prm.comment}</li>
         </ul>
+            <MyAnnotations annotation= 'S' data={sElements} />
+            <MyAnnotations annotation= 'V' data={vElements} />
+            <MyNoises noiseAnnotations = {annot_js.noises} />
         </div>
       )}
 

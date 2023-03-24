@@ -100,9 +100,9 @@ const EkgPrmShow = () => {
     
       const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
       const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V');
-      console.log('sElements:',sElements)
-      console.log('vElements:',vElements)
-      console.log('annot_js.noises:',annot_js.noises)
+      // console.log('sElements:',sElements)
+      // console.log('vElements:',vElements)
+      // console.log('annot_js.noises:',annot_js.noises)
       
       return(
         <div>
