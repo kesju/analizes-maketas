@@ -36,13 +36,6 @@ ChartJS.register(
 
 const ShowGraph = ({data, options, width, height}) => {
   
-  const {segmParam, setSegmParam} = useContext(SegmParamContext);
-
-    if (segmParam.fname === '9999999.999') { 
-      return(
-        <h1>Pasirink įrašą!</h1>
-      ); 
-    } else { 
       return(
         // <div className="my-chart-container">
         <div>
@@ -50,16 +43,13 @@ const ShowGraph = ({data, options, width, height}) => {
         </div>
       );
   } 
-}
 
-const EkgGraph = () => {
+const EkgGraphShow = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-  // const fname = "1642627.410";
   console.log('segmParam:', segmParam.fname, segmParam.at, segmParam.length)
 
   const [showWindow, setShowWindow] = useState(false);
-  const [windowValues, setWindowValues] = useState(null);
 
   // const [param, setParam] = useState({
   //   at: 0,
@@ -97,11 +87,8 @@ const EkgGraph = () => {
     function handleKeyDown(event) {
       if (event.ctrlKey && event.key === 'v') {
         setShowWindow(true);
-        setWindowValues('Langas vaizdavimui');
       } else {
         setShowWindow(false);
-        // setShowWindow(true);
-        setWindowValues(null);
       }
     }
     // console.log('showWindow:',showWindow)
@@ -198,5 +185,25 @@ const EkgGraph = () => {
     
   return <span>Loading...</span>;
 };
+
+const EkgGraph = () => {
+
+  const {segmParam, setSegmParam} = useContext(SegmParamContext);
+  console.log('segmParam:', segmParam.fname, segmParam.at, segmParam.length)
+
+  if (segmParam.fname === '9999999.999') { 
+    return(
+      <div>
+      <h1>Pasirink įrašą!</h1>
+      </div>
+    ); 
+  } else { 
+    return(
+      <div>
+      <EkgGraphShow />
+      </div>
+    );
+  }
+}
 
 export default EkgGraph
