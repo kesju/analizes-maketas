@@ -57,7 +57,7 @@ const EkgGraph = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
   // const fname = "1642627.410";
-  console.log('segmParam:', segmParam.fname, segmParam.param.at, segmParam.param.length)
+  console.log('segmParam:', segmParam.fname, segmParam.at, segmParam.length)
 
   const [showWindow, setShowWindow] = useState(false);
   const [windowValues, setWindowValues] = useState(null);
@@ -116,32 +116,29 @@ const EkgGraph = () => {
     const { name, value } = event.target;
     setSegmParam(prevState => ({
       ...prevState,
-      param: {
-        ...prevState.param,
         [name]: parseInt(value)
-      }
     }));
   };
   
   
   function handleArrowKey(event) {
-    const step = Math.max(1, Math.floor(segmParam.param.length / 10));
+    const step = Math.max(1, Math.floor(segmParam.length / 10));
     
     console.log("KLAVISO PASPAUDIMAS", event.keyCode)
     console.log("step", step)
 
     switch (event.keyCode) {
       case 37: // left arrow key - atgal
-      setSegmParam({ ...segmParam.param, at: (segmParam.param.at - step) >= 0 ? segmParam.param.at - step : 0});
+      setSegmParam({ ...segmParam, at: (segmParam.at - step) >= 0 ? segmParam.at - step : 0});
       break;
       case 40: // up arrow key - išplečia
-      setSegmParam({ ...segmParam.param, length: (segmParam.param.length + 100) <= data_rec.length ? segmParam.param.length + 100 : data_rec.length });
+      setSegmParam({ ...segmParam, length: (segmParam.length + 100) <= data_rec.length ? segmParam.length + 100 : data_rec.length });
       break;
       case 39: // right arrow key - pirmyn
-      setSegmParam({ ...segmParam.param, at: (segmParam.param.at + step) <= data_rec.length ? segmParam.param.at + step : segmParam.param.at });
+      setSegmParam({ ...segmParam, at: (segmParam.at + step) <= data_rec.length ? segmParam.at + step : segmParam.at });
       break;
       case 38: // down arrow key - suglaudžia
-      setSegmParam({ ...segmParam.param, length: Math.max(segmParam.param.length - 100, 100) });
+      setSegmParam({ ...segmParam, length: Math.max(segmParam.length - 100, 100) });
       break;
       default:
         break;
@@ -149,20 +146,20 @@ const EkgGraph = () => {
     }
   
   if (loaded_rec && loaded_js && loaded_prm) {
-    const segmentData = data_rec.slice(segmParam.param.at, segmParam.param.at + segmParam.param.length);
+    const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
     // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
  
-    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.param.at && rpeak.sampleIndex < segmParam.param.at + segmParam.param.length)
-    .map((rpeak) => rpeak.sampleIndex - segmParam.param.at);
+    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
+    .map((rpeak) => rpeak.sampleIndex - segmParam.at);
     // console.log(idxVisualRpeaks);
   
-    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.param.at && rpeak.sampleIndex < segmParam.param.at + segmParam.param.length)
+    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
     // console.log(annotationVisualValues);
 
-    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.param.at, segmParam.param.length);
+    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
 
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
@@ -174,12 +171,12 @@ const EkgGraph = () => {
         {/* <form> */}
           <label>
             at:
-            <input type="number" name="at" value={segmParam.param.at} onChange={handleInputChange} />
+            <input type="number" name="at" value={segmParam.at} onChange={handleInputChange} />
           </label>
           {/* <br /> */}
           <label>
             length:
-            <input type="number" name="length" value={segmParam.param.length} onChange={handleInputChange} />
+            <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />
           </label>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>

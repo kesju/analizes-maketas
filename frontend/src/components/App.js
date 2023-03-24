@@ -28,7 +28,7 @@ const columns = [
   { field: 'col10', headerName: 'comment', width: 250 },
 ];
 
-function GridShow() {
+function GridShow({initialValues}) {
 
   const { data: data_lst, error: error_lst, loaded: loaded_lst } = useAxiosGet(
       "http://localhost:8000", {}
@@ -39,18 +39,23 @@ function GridShow() {
 
       return(
           <div>
-              <ControlledSelectionGrid data_lst = {data_lst}/>
+              <ControlledSelectionGrid initialValues = {initialValues} data_lst = {data_lst}/>
           </div>
       )
   }
   return <span>Loading...</span>;        
 }
 
-function ControlledSelectionGrid({ data_lst }) {
+function ControlledSelectionGrid({initialValues, data_lst }) {
   
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-    const [searchQuery, setSearchQuery] = useState('');
-      
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // const [initialValues, setInitialValues] = useState({
+  //   at: segmParam.at,
+  //   length: segmParam.length});
+
+  
         console.log('lst:',data_lst)
         console.log('segmParam:', segmParam)
         
@@ -75,9 +80,11 @@ function ControlledSelectionGrid({ data_lst }) {
         const onRowSelect = (params, event) => {
               setSegmParam({
                 ...segmParam,    // copy all the properties of the existing object
-                fname: params.row.col2  // set the new value for fname
+                fname: params.row.col2, // set the new value for fname
+                at: initialValues.at,
+                length: initialValues.length  
               });
-            // console.log('segmParam:', segmParam)
+            console.log('segmParam selected:', segmParam)
         };
 
         // const jsonFile = require('./list_tst.json');
@@ -112,26 +119,25 @@ function ControlledSelectionGrid({ data_lst }) {
                 disableSelectionOnClick={true}
                 onRowClick={onRowSelect}
             />
-                <h4>&nbsp;&nbsp;fname: {segmParam.fname} &nbsp;at:{segmParam.param.at}  &nbsp;length:{segmParam.param.length}</h4>
+                <h4>&nbsp;&nbsp;fname: {segmParam.fname} &nbsp;at:{segmParam.at}  &nbsp;length:{segmParam.length}</h4>
             </div>
         );
 }
 
 function App() {
 
-  const SegmParamProvider = ({ children, value }) => (
-    <SegmParamContext.Provider value={value}>{children}</SegmParamContext.Provider>
-  );
-
+  // const SegmParamProvider = ({ children, value }) => (
+  //   <SegmParamContext.Provider value={value}>{children}</SegmParamContext.Provider>
+  // );
+  
+  const initialValues = { at: 0, length: 1000 };
+  
   const [segmParam, setSegmParam] = useState({
     fname:'9999999.999',
-    param:{
-      at: 0,
-      length: 1000
-    }
+    at: initialValues.at,
+    length: initialValues.length
   });
 
-  
   return (
     <div className="App">
       <SegmParamContext.Provider value={{
@@ -141,7 +147,7 @@ function App() {
 
       <Header></Header>
         <Routes>
-          <Route path="/" element={ <GridShow /> } />
+          <Route path="/" element={ <GridShow initialValues = {initialValues}/> } />
           <Route path="ekggraph" element={ <EkgGraph/> } />
           {/*<Route path="ekgprm" element={ <EkgPrm/> } />
           <Route path="compareanalysis" element={ <CompareAnalysis/> } />
