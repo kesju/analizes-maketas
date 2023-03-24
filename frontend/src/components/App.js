@@ -4,10 +4,10 @@ import EkgGraph from "../pages/EkgGraph"
 import EkgNoises from "../pages/EkgNoises"
 import EkgRpeaks from "../pages/EkgRpeaks"
 import EkgPrm from "../pages/EkgPrm"
-// import CompareAnalysis from "../pages/CompareAnalysis"
+import CompareAnalysis from "../pages/CompareAnalysis"
 import Analysis from "../pages/Analysis"
 import Filtration from "../pages/Filtration"
-// import Testing from "../pages/Testing"
+import Testing from "../pages/Testing"
 import Header from "./ui/Header"
 import useAxiosGet from './useAxiosGet'
 import SegmParamContext from './SegmParamContext'
@@ -152,8 +152,8 @@ function App() {
           <Route path="filtration" element={ <Filtration/> } />
           <Route path="analysis" element={ <Analysis/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
-          {/* <Route path="compareanalysis" element={ <CompareAnalysis/> } />
-          <Route path="testing" element={ <Testing/> } /> */}
+          <Route path="compareanalysis" element={ <CompareAnalysis/> } />
+          <Route path="testing" element={ <Testing/> } />
         </Routes>
       </SegmParamContext.Provider>
     </div>

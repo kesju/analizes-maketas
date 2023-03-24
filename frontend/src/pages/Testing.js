@@ -2,7 +2,7 @@
 // Naudojamas testavimui su generuotais duomenimis
 
 import {React, useContext} from 'react'
-import AuthContext from "../components/AuthContext" 
+import SegmParamContext from '../components/SegmParamContext'
 import uPlot from 'uplot';
 // import UplotReact from 'uplot-react';
 import 'uplot/dist/uPlot.min.css';
@@ -10,7 +10,7 @@ import { useRef, useEffect } from 'react';
 
 
 function Testing() {
-  const auth = useContext(AuthContext);
+  const {segmParam, setSegmParam} = useContext(SegmParamContext);
 
 // EKG įrašo reikšmės, atsisiunčiama iš backend
  const data_orig = [  
@@ -80,7 +80,7 @@ const options = {
     return (
       <div>
         <h1>Puslapis testavimui</h1>
-        <h3>Failo vardas: {auth}</h3>
+        <h3>Failo vardas: {segmParam.fname}</h3>
         <LineChart  options={options} data={data} />
       </div>
     );
