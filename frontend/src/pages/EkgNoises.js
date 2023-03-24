@@ -1,7 +1,7 @@
 // Čia išveda originalaus EKG įrašo grafiką
 
-import {useState, useContext, React} from 'react';
-import AuthContext from '../components/AuthContext'
+import {useContext, React} from 'react';
+import SegmParamContext from '../components/SegmParamContext'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
 import './MyChart.css';
@@ -36,38 +36,23 @@ ChartJS.register(
 
 const ShowGraph = ({data, options, width, height}) => {
 
-  const auth = useContext(AuthContext);
-
-    if (auth === '9999999.999') { 
-      return(
-        <h1>Pasirink įrašą!</h1>
-      ); 
-    } else { 
-      return(
+       return(
         // <div className="my-chart-container">
         <div>
         <Line width={width} height={height} options={options} data={data} />;
         </div>
       );
   } 
-}
 
-const EkgNoises = () => {
+const EkgNoisesShow = () => {
 
-  const auth = useContext(AuthContext);
-  // const auth = "1642627.410";
-  console.log(auth)
+  const {segmParam, setSegmParam} = useContext(SegmParamContext);
 
-  const [param, setParam] = useState({
-    at: 0,
-    length: 1000,
-  })
-  
   const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
     "http://localhost:8000/record",
           {
             params: {
-              fname:auth,
+              fname:segmParam.fname,
             }
           }
   );
@@ -76,80 +61,58 @@ const EkgNoises = () => {
     "http://localhost:8000/annotations",
             {
               params: {
-                fname:auth,
+                fname:segmParam.fname,
               }
             }
   );
 
   function handleInputChange(event) {
     const { name, value } = event.target;
-    setParam({ ...param, [name]: parseInt(value) }); // include atStep in updated state
-  }
+    setSegmParam(prevState => ({
+      ...prevState,
+        [name]: parseInt(value)
+    }));
+  };
   
-  function handleKeyDown(event) {
-    const step = Math.max(1, Math.floor(param.length / 10));
-    
+  function handleArrowKey(event) {
+    const step = Math.max(1, Math.floor(segmParam.length / 10));
+  
     switch (event.keyCode) {
       case 37: // left arrow key - atgal
-      setParam({ ...param, at: (param.at - step) >= 0 ? param.at - step : 0});
+      setSegmParam({ ...segmParam, at: (segmParam.at - step) >= 0 ? segmParam.at - step : 0});
       break;
       case 40: // up arrow key - išplečia
-      setParam({ ...param, length: (param.length + 100) <= data_rec.length ? param.length + 100 : data_rec.length });
+      setSegmParam({ ...segmParam, length: (segmParam.length + 100) <= data_rec.length ? segmParam.length + 100 : data_rec.length });
       break;
       case 39: // right arrow key - pirmyn
-      setParam({ ...param, at: (param.at + step) <= data_rec.length ? param.at + step : param.at });
+      setSegmParam({ ...segmParam, at: (segmParam.at + step) <= data_rec.length ? segmParam.at + step : segmParam.at });
       break;
       case 38: // down arrow key - suglaudžia
-      setParam({ ...param, length: Math.max(param.length - 100, 100) });
+      setSegmParam({ ...segmParam, length: Math.max(segmParam.length - 100, 100) });
       break;
       default:
         break;
       }
     }
-  
-  if (loaded_rec && loaded_js) {
-    const segmentData = data_rec.slice(param.at, param.at + param.length);
+
+    if (loaded_rec && loaded_js) {
+    const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
     // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
  
-    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
-    .map((rpeak) => rpeak.sampleIndex - param.at);
+    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
+    .map((rpeak) => rpeak.sampleIndex - segmParam.at);
     console.log(idxVisualRpeaks);
   
-    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= param.at && rpeak.sampleIndex < param.at + param.length)
+    const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
     console.log(annotationVisualValues);
 
 
-//  testavimui
-  //   const noises = [
-  //     {
-  //         startIndex: 100,
-  //         endIndex: 500
-  //     },
-  //     {
-  //         startIndex: 600,
-  //         endIndex: 700
-  //     },
-  //     {
-  //         startIndex: 1200,
-  //         endIndex: 1300
-  //     },
-  //     {
-  //         startIndex: 1800,
-  //         endIndex: 2400
-  //     },
-  //     {
-  //         startIndex: 86698,
-  //         endIndex: 96259
-  //     }
-  // ];
+  const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
 
-  // const noises = annot_js.noises
-  const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, param.at, param.length);
-
-  // console.log(param.at, param.length)
+  // console.log(segmParam.at, segmParam.length)
   // console.log('noiseAnnotations:', noiseVisualAnnotations)
 
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
@@ -157,19 +120,19 @@ const EkgNoises = () => {
     
     return (
       // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
-      <div onKeyDown={handleKeyDown} tabIndex="0" >
+      <div onKeyDown={handleArrowKey} tabIndex="0" >
         
         {/* <form> */}
           <label>
             at:
-            <input type="number" name="at" value={param.at} onChange={handleInputChange} />
+            <input type="number" name="at" value={segmParam.at} onChange={handleInputChange} />
           </label>
           {/* <br /> */}
           <label>
             length:
-            <input type="number" name="length" value={param.length} onChange={handleInputChange} />
+            <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />
           </label>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {auth}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>
       
       </div>
@@ -178,5 +141,24 @@ const EkgNoises = () => {
     
   return <span>Loading...</span>;
 };
+
+const EkgNoises = () => {
+
+  const {segmParam, setSegmParam} = useContext(SegmParamContext);
+
+  if (segmParam.fname === '9999999.999') { 
+    return(
+      <div>
+      <h1>Pasirink įrašą!</h1>
+      </div>
+    ); 
+  } else { 
+    return(
+      <div>
+      <EkgNoisesShow />
+      </div>
+    );
+  }
+}
 
 export default EkgNoises

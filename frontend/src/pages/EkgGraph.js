@@ -106,13 +106,9 @@ const EkgGraphShow = () => {
     }));
   };
   
-  
   function handleArrowKey(event) {
     const step = Math.max(1, Math.floor(segmParam.length / 10));
-    
-    console.log("KLAVISO PASPAUDIMAS", event.keyCode)
-    console.log("step", step)
-
+  
     switch (event.keyCode) {
       case 37: // left arrow key - atgal
       setSegmParam({ ...segmParam, at: (segmParam.at - step) >= 0 ? segmParam.at - step : 0});
@@ -162,7 +158,7 @@ const EkgGraphShow = () => {
             length:
             <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />
           </label>
-          
+
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>
       

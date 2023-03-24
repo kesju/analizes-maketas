@@ -1,7 +1,7 @@
 import {useContext, useState, React} from 'react';
 import { Routes, Route } from "react-router-dom"
 import EkgGraph from "../pages/EkgGraph"
-// import EkgNoises from "../pages/EkgNoises"
+import EkgNoises from "../pages/EkgNoises"
 import EkgRpeaks from "../pages/EkgRpeaks"
 import EkgPrm from "../pages/EkgPrm"
 // import CompareAnalysis from "../pages/CompareAnalysis"
@@ -151,8 +151,8 @@ function App() {
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />
           <Route path="filtration" element={ <Filtration/> } />
           <Route path="analysis" element={ <Analysis/> } />
-          {/* <Route path="compareanalysis" element={ <CompareAnalysis/> } />
           <Route path="ekgnoises" element={ <EkgNoises/> } />
+          {/* <Route path="compareanalysis" element={ <CompareAnalysis/> } />
           <Route path="testing" element={ <Testing/> } /> */}
         </Routes>
       </SegmParamContext.Provider>
