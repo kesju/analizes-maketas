@@ -2,7 +2,7 @@ import {useContext, useState, React} from 'react';
 import { Routes, Route } from "react-router-dom"
 import EkgGraph from "../pages/EkgGraph"
 // import EkgNoises from "../pages/EkgNoises"
-// import EkgRpeaks from "../pages/EkgRpeaks"
+import EkgRpeaks from "../pages/EkgRpeaks"
 import EkgPrm from "../pages/EkgPrm"
 // import CompareAnalysis from "../pages/CompareAnalysis"
 // import Analysis from "../pages/Analysis"
@@ -12,8 +12,6 @@ import Header from "./ui/Header"
 import useAxiosGet from './useAxiosGet'
 import SegmParamContext from './SegmParamContext'
 import {DataGrid } from '@mui/x-data-grid';
-
-
 
 const columns = [
   { field: 'col1', headerName: 'id', width: 60 },
@@ -150,9 +148,9 @@ function App() {
           <Route path="/" element={ <GridShow initialValues = {initialValues}/> } />
           <Route path="ekggraph" element={ <EkgGraph/> } />
          <Route path="ekgprm" element={ <EkgPrm/> } />
-           {/*<Route path="compareanalysis" element={ <CompareAnalysis/> } />
-          <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="ekgrpeaks" element={ <EkgRpeaks/> } />
+          {/* <Route path="compareanalysis" element={ <CompareAnalysis/> } />
+          <Route path="ekgnoises" element={ <EkgNoises/> } />
           <Route path="analysis" element={ <Analysis/> } />
           <Route path="filtration" element={ <Filtration/> } />
           <Route path="testing" element={ <Testing/> } /> */}
