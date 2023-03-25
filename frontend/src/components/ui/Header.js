@@ -17,9 +17,9 @@ export default function Header(props) {
                     <Tab component={Link} to="EkgPrm" label="Parametrai" />
                     <Tab component={Link} to="Analysis" label="Aut.analizė" />
                     <Tab component={Link} to="CompareAnalysis" label="Sul.analiz." />
+                    <Tab component={Link} to="Filtration" label="Sul.filtrav." />
                     <Tab component={Link} to="EkgRpeaks" label="Sul.rpeaks" />
                     <Tab component={Link} to="EkgNoises" label="Sul.triukšm." />
-                    <Tab component={Link} to="Filtration" label="Sul.filtrav." />
                     <Tab component={Link} to="Testing" label="Testas" />
                 </Tabs>
             </Toolbar>

@@ -1,6 +1,6 @@
 // Čia išveda originalaus EKG įrašo grafiką
 
-import {useContext, React} from 'react';
+import {useState, useEffect, useContext, React} from 'react';
 import SegmParamContext from '../components/SegmParamContext'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
@@ -36,6 +36,48 @@ ChartJS.register(
   Legend
 );
 
+function MyAnnotations(props) {
+  const {annotation, data } = props;
+  
+  if (data.length === 0) {
+    return <div>&nbsp;{annotation}: nėra</div>;
+  }
+
+  return (
+    <div>
+      <span >&nbsp;{annotation}: </span>
+      {data.map((element, index) => (
+        <span key={index}>
+        {`${element.sampleIndex}`}
+        {index < data.length - 1 ? ", " : ""}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function MyNoises(props) {
+const {noiseAnnotations} = props;
+
+if (noiseAnnotations.length === 0) {
+  return <div>&nbsp;Pažymėtų triukšmų nėra</div>;
+}
+
+return (
+  <div>  
+     <div>
+      <>Pažymėtų triukšmų intervalų: {noiseAnnotations.length} </>
+     </div>
+      {noiseAnnotations.map((noise, index) => (
+        <span key={index}>
+          {`(${noise.startIndex}, ${noise.endIndex})`}
+          {index < noiseAnnotations.length - 1 ? ", " : ""}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 const ShowGraph = ({data, options, width, height}) => {
 
       return(
@@ -50,6 +92,7 @@ const ShowGraph = ({data, options, width, height}) => {
 const CompareAnalysisShow = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
+  const [showWindow, setShowWindow] = useState(false);
   
   const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
     "http://localhost:8000/record",
@@ -77,6 +120,29 @@ const CompareAnalysisShow = () => {
               }
             }
   );
+
+  const { data: data_prm, error: error_prm, loaded: loaded_prm } = useAxiosGet(
+    "http://localhost:8000/ekgprm",
+          {
+            params: {
+              fname:segmParam.fname,
+            }
+          }
+  );
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.ctrlKey && event.key === 'v') {
+        setShowWindow(true);
+      } else {
+        setShowWindow(false);
+      }
+    }
+    // console.log('showWindow:',showWindow)
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -107,7 +173,7 @@ const CompareAnalysisShow = () => {
       }
     }
   
-  if (loaded_rec && loaded_js && loaded_rsl) {
+  if (loaded_rec && loaded_js && loaded_rsl && loaded_prm) {
 
     // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
@@ -146,7 +212,11 @@ const CompareAnalysisShow = () => {
     const {data:data_ml, options:options_ml} = generateChartConfig(idxVisualArray, valueVisualArray,
     idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
     options_ml.scales.x.ticks.display = false;
-    
+
+    // pop-up window 
+    const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
+    const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V'); 
+
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >
         
@@ -168,6 +238,23 @@ const CompareAnalysisShow = () => {
           <ShowGraph data={data} options={options} width={1200} height={250}/>
           <ShowGraph data={data_ml} options={options_ml} width={1200} height={250}/>
       
+         {/* pop-up window */}
+         {showWindow && (
+            <div className="window">
+               <ul>
+           <h1>File Name: {data_prm.file_name}</h1>
+           <li>N: {data_prm.N} S: {data_prm.S} V: {data_prm.V} U: {data_prm.U}</li>
+           <li>Tr: {data_prm.Tr}</li>
+           <li>flag: {data_prm.flag}</li>
+           <li>incl: {data_prm.incl}</li>
+           <li>comment: {data_prm.comment}</li>
+        </ul>
+            <MyAnnotations annotation= 'S' data={sElements} />
+            <MyAnnotations annotation= 'V' data={vElements} />
+            <MyNoises noiseAnnotations = {annot_js.noises} />
+        </div>
+        )}
+
       </div>
     );
   }

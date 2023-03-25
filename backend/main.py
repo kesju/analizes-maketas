@@ -59,7 +59,7 @@ rsl_folder = 'results'
 fp = {  'type': 'lowcut',
         'method':'butterworth',
         'order':5,
-        'lowcut':1.0,
+        'lowcut':0.5,
         'highcut':20 }
 
 

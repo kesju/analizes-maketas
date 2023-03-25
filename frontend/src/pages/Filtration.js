@@ -1,6 +1,6 @@
 // Čia išveda originalaus EKG įrašo grafiką
 
-import {useContext, React} from 'react';
+import {useEffect, useState, useContext, React} from 'react';
 import SegmParamContext from '../components/SegmParamContext'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
 import {noiseAnnotations} from '../components/utils/noiseAnnotations'
@@ -35,6 +35,49 @@ ChartJS.register(
   Legend
 );
 
+function MyAnnotations(props) {
+  const {annotation, data } = props;
+  
+  if (data.length === 0) {
+    return <div>&nbsp;{annotation}: nėra</div>;
+  }
+
+  return (
+    <div>
+      <span >&nbsp;{annotation}: </span>
+      {data.map((element, index) => (
+        <span key={index}>
+        {`${element.sampleIndex}`}
+        {index < data.length - 1 ? ", " : ""}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function MyNoises(props) {
+const {noiseAnnotations} = props;
+
+if (noiseAnnotations.length === 0) {
+  return <div>&nbsp;Pažymėtų triukšmų nėra</div>;
+}
+
+return (
+  <div>  
+     <div>
+      <>Pažymėtų triukšmų intervalų: {noiseAnnotations.length} </>
+     </div>
+      {noiseAnnotations.map((noise, index) => (
+        <span key={index}>
+          {`(${noise.startIndex}, ${noise.endIndex})`}
+          {index < noiseAnnotations.length - 1 ? ", " : ""}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+
 const ShowGraph = ({data, options, width, height}) => {
 
       return(
@@ -47,6 +90,7 @@ const ShowGraph = ({data, options, width, height}) => {
 const FiltrationShow = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
+  const [showWindow, setShowWindow] = useState(false);
 
   const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
     "http://localhost:8000/record",
@@ -74,6 +118,31 @@ const FiltrationShow = () => {
               }
             }
   );
+
+  const { data: data_prm, error: error_prm, loaded: loaded_prm } = useAxiosGet(
+    "http://localhost:8000/ekgprm",
+          {
+            params: {
+              fname:segmParam.fname,
+            }
+          }
+  );
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.ctrlKey && event.key === 'v') {
+        setShowWindow(true);
+      } else {
+        setShowWindow(false);
+      }
+    }
+    // console.log('showWindow:',showWindow)
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+
 
   function handleInputChange(event) {
     const { name, value } = event.target;
@@ -107,7 +176,7 @@ const FiltrationShow = () => {
       }
     }
   
-  if (loaded_rec && loaded_flt && loaded_js) {
+  if (loaded_rec && loaded_flt && loaded_js && loaded_prm) {
 
     // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
@@ -138,6 +207,10 @@ const FiltrationShow = () => {
     // options_flt.scales.x.ticks.display = true;
     options_flt.scales.x.ticks.display = false;
 
+    // pop-up window 
+    const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
+    const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V'); 
+
     return (
       // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
       <div onKeyDown={handleArrowKey} tabIndex="0" >
@@ -152,10 +225,26 @@ const FiltrationShow = () => {
           </label>
 
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length} 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Viršuje po filtro: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}nbsp;Hz
-          <ShowGraph data={data_flt} options={options_flt} width={1200} height={300} />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Apačioje po filtro {filtered.flt_param.type} &nbsp;{filtered.flt_param.lowcut}&nbsp;Hz
           <ShowGraph data={data} options={options} width={1200} height={300} />
+          <ShowGraph data={data_flt} options={options_flt} width={1200} height={300} />
       
+      {/* pop-up window */}
+      {showWindow && (
+            <div className="window">
+               <ul>
+           <h1>File Name: {data_prm.file_name}</h1>
+           <li>N: {data_prm.N} S: {data_prm.S} V: {data_prm.V} U: {data_prm.U}</li>
+           <li>Tr: {data_prm.Tr}</li>
+           <li>flag: {data_prm.flag}</li>
+           <li>incl: {data_prm.incl}</li>
+           <li>comment: {data_prm.comment}</li>
+        </ul>
+            <MyAnnotations annotation= 'S' data={sElements} />
+            <MyAnnotations annotation= 'V' data={vElements} />
+            <MyNoises noiseAnnotations = {annot_js.noises} />
+        </div>
+        )}
       </div>
     );
   }

@@ -214,7 +214,7 @@ const EkgGraphShow = () => {
             <MyAnnotations annotation= 'V' data={vElements} />
             <MyNoises noiseAnnotations = {annot_js.noises} />
         </div>
-      )}
+        )}
       </div>
     );
   }
@@ -225,7 +225,6 @@ const EkgGraphShow = () => {
 const EkgGraph = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-  console.log('segmParam:', segmParam.fname, segmParam.at, segmParam.length)
 
   if (segmParam.fname === '9999999.999') { 
     return(
