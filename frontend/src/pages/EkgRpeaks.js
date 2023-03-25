@@ -182,13 +182,7 @@ const ShowGraph = ({data, options, width, height}) => {
 const EkgRpeaksShow = () => {
 
   const {segmParam, setSegmParam} = useContext(SegmParamContext);
-  // const auth = "1642627.410";
-  // console.log(auth)
-
-  // const [param, setParam] = useState({
-  //   at: 0,
-  //   length: 1000,
-  // })
+  
   // loading ECG record
   const { data: data_rec, error: error_rec, loaded: loaded_rec } = useAxiosGet(
     "http://localhost:8000/record",
@@ -227,13 +221,9 @@ const EkgRpeaksShow = () => {
     }));
   };
   
-  
   function handleArrowKey(event) {
     const step = Math.max(1, Math.floor(segmParam.length / 10));
-    
-    console.log("KLAVISO PASPAUDIMAS", event.keyCode)
-    console.log("step", step)
-
+  
     switch (event.keyCode) {
       case 37: // left arrow key - atgal
       setSegmParam({ ...segmParam, at: (segmParam.at - step) >= 0 ? segmParam.at - step : 0});
@@ -252,41 +242,36 @@ const EkgRpeaksShow = () => {
       }
     }
   
-  
   if (loaded_rec && loaded_js && loaded_nk) {
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
  
+    // edited rpeaks of original record
     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
-    // console.log('idxVisualRpeaks:',idxVisualRpeaks);
-  
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
-    // console.log(annotationVisualValues);
 
+    // not edited rpeaks of original record (Neurokit2)
     const idxVisualNkRpeaks = nk_rpeaks.filter((rpeak) => rpeak >= segmParam.at && rpeak < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak - segmParam.at);
-    // console.log('idxVisualNkRpeaks:',idxVisualNkRpeaks);
-  
     const annotationVisualValuesNk = idxVisualNkRpeaks.map(() => "N");
     // console.log(annotationVisualValuesNk);
     
-  // const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
-  const noiseVisualAnnotations = [];
+    // noise annotations of original record 
+    // const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
+    const noiseVisualAnnotations = [];
 
-  const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
-       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
+    //chart.js data & options for original record with edited rpeaks
+    const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
+        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
 
-  const {data:data_nk, options:options_nk} = generateChartConfig(idxVisualArray, valueVisualArray,
-        idxVisualNkRpeaks, annotationVisualValuesNk, noiseVisualAnnotations);
-  options_nk.scales.x.ticks.display = false;
-
-
-  // console.log('data_nk:',data_nk)  
-  // console.log('options_nk:',options_nk)  
+    //chart.js data & options for original record with not edited rpeaks
+    const {data:data_nk, options:options_nk} = generateChartConfig(idxVisualArray, valueVisualArray,
+          idxVisualNkRpeaks, annotationVisualValuesNk, noiseVisualAnnotations);
+    options_nk.scales.x.ticks.display = false;
 
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >
@@ -308,7 +293,6 @@ const EkgRpeaksShow = () => {
       </div>
     );
   }
-    
   return <span>Loading...</span>;
 };
 

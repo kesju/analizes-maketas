@@ -109,43 +109,43 @@ const CompareAnalysisShow = () => {
   
   if (loaded_rec && loaded_js && loaded_rsl) {
 
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
  
+    // edited rpeaks of original record
     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
-    // console.log(idxVisualRpeaks);
-  
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
-    // console.log(annotationVisualValues);
 
+    // noise annotations of original record 
     const noiseIntervals = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
+    
+    // annotation numbers of original record
+    const annotationNumbers = annotationCounts(annot_js.rpeaks);
 
+    //chart.js data & options for original record
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseIntervals);
     
-    const annotationNumbers = annotationCounts(annot_js.rpeaks);
-    
-
+    // not edited rpeaks of analysed record 
     const idxMlVisualRpeaks = data_rsl.automatic_classification.filter((rpeak) => rpeak.sample >= segmParam.at && rpeak.sample < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sample - segmParam.at);
-    // console.log(idxVisualRpeaks);
-  
     const annotationMlVisualValues = data_rsl.automatic_classification.filter((rpeak) => rpeak.sample >= segmParam.at && rpeak.sample < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotation);
-    // console.log(annotationVisualValues);
+      
+    // automatic noise annotations of analysed record 
+    const noiseMlIntervals = []; // Automatic algorithm is absent
     
-    const noiseMlIntervals = [];
-
-    const {data:data_ml, options:options_ml} = generateChartConfig(idxVisualArray, valueVisualArray,
-      idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
-    options_ml.scales.x.ticks.display = false;
-    
+    // annotation numbers of analysed record
     const mlAnnotationNumbers = mlAnnotationCounts(data_rsl.automatic_classification);
     
+    //chart.js data & options for analysed record
+    const {data:data_ml, options:options_ml} = generateChartConfig(idxVisualArray, valueVisualArray,
+    idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
+    options_ml.scales.x.ticks.display = false;
     
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >

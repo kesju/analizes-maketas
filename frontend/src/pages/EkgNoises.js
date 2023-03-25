@@ -96,38 +96,31 @@ const EkgNoisesShow = () => {
     }
 
     if (loaded_rec && loaded_js) {
+
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
  
-    const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
+    // edited rpeaks of original record
+     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
-    console.log(idxVisualRpeaks);
-  
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
-    console.log(annotationVisualValues);
 
+    // noise annotations of original record 
+    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
 
-  const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
-
-  // console.log(segmParam.at, segmParam.length)
-  // console.log('noiseAnnotations:', noiseVisualAnnotations)
-
+    //chart.js data & options for original record
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
        idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
     
     return (
-      // <div onKeyDown={handleKeyDown} tabIndex="0" style={{ display: 'flex' }}>
       <div onKeyDown={handleArrowKey} tabIndex="0" >
-        
-        {/* <form> */}
           <label>
             at:
             <input type="number" name="at" value={segmParam.at} onChange={handleInputChange} />
           </label>
-          {/* <br /> */}
           <label>
             length:
             <input type="number" name="length" value={segmParam.length} onChange={handleInputChange} />

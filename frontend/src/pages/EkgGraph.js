@@ -163,32 +163,27 @@ const EkgGraphShow = () => {
     }
   
   if (loaded_rec && loaded_js && loaded_prm) {
-    
-    // Įrašo segmento duomenys 
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
     
-    // rpeaks
+    // edited rpeaks of original record
     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
-    // console.log(idxVisualRpeaks);
-  
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
-    // console.log(annotationVisualValues);
 
-    // noises
+    // noise annotations of original record 
     const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
-
+    
+    //chart.js data & options for original record
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray,
       idxVisualRpeaks, annotationVisualValues, noiseVisualAnnotations);
-  
-    // duomenys iššokančiam langui  
+
+    // pop-up window 
     const sElements = annot_js.rpeaks.filter(element => element.annotationValue === 'S');
     const vElements = annot_js.rpeaks.filter(element => element.annotationValue === 'V'); 
-    
 
     return (
       <div onKeyDown={handleArrowKey} tabIndex="0" >
@@ -203,7 +198,8 @@ const EkgGraphShow = () => {
 
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {data_rec.length}  
           <ShowGraph data={data} options={options} width={1200} height={400}/>
-      
+        
+          {/* pop-up window */}
           {showWindow && (
             <div className="window">
                <ul>
@@ -219,8 +215,6 @@ const EkgGraphShow = () => {
             <MyNoises noiseAnnotations = {annot_js.noises} />
         </div>
       )}
-
-
       </div>
     );
   }

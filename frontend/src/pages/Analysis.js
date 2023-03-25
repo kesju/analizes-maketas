@@ -189,24 +189,25 @@ const AnalysisShow = () => {
     if (data_rsl.hasOwnProperty("error")) {
         return <span>{data_rsl.error}</span>;
     }
-        
+    
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    // console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
-    // console.log('data_rsl:', data_rsl)
 
+    // not edited rpeaks of original record
     const idxMlVisualRpeaks = data_rsl.automatic_classification.filter((rpeak) => rpeak.sample >= segmParam.at && rpeak.sample < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sample - segmParam.at);
-    // console.log(idxVisualRpeaks);
-  
     const annotationMlVisualValues = data_rsl.automatic_classification.filter((rpeak) => rpeak.sample >= segmParam.at && rpeak.sample < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotation);
-    // console.log(annotationVisualValues);
     
+    // automatic noise annotations of original record 
     const noiseMlIntervals = [];
+
+    // annotation numbers of analysed record
     const mlAnnotationNumbers = mlAnnotationCounts(data_rsl.automatic_classification);
-    // console.log('annotationNumbers:', annotationNumbers)
+    
+    //chart.js data & options for analysed record
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray, idxMlVisualRpeaks, annotationMlVisualValues, noiseMlIntervals);
 
     return (

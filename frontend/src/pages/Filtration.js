@@ -1,8 +1,9 @@
 // Čia išveda originalaus EKG įrašo grafiką
 
-import {useState, useContext, React} from 'react';
+import {useContext, React} from 'react';
 import SegmParamContext from '../components/SegmParamContext'
 import {generateChartConfig} from '../components/utils/generateChartConfig'
+import {noiseAnnotations} from '../components/utils/noiseAnnotations'
 
 // import './MyChart.css';
 import "chartjs-plugin-annotation";
@@ -82,7 +83,6 @@ const FiltrationShow = () => {
     }));
   };
   
-  
   function handleArrowKey(event) {
     const step = Math.max(1, Math.floor(segmParam.length / 10));
     
@@ -108,37 +108,33 @@ const FiltrationShow = () => {
     }
   
   if (loaded_rec && loaded_flt && loaded_js) {
-    
 
-    console.log("filtered.flt_param:", filtered.flt_param);
-    console.log("filtered.values:", filtered.values);
-    console.log("data_rec:", data_rec);
-    console.log("annot_js.rpeaks:", annot_js.rpeaks);
-
+    // segment of original record 
     const segmentData = data_rec.slice(segmParam.at, segmParam.at + segmParam.length);
-    console.log("segmentData:", segmentData)
     const idxVisualArray = segmentData.map((data) => data.idx);
     const valueVisualArray = segmentData.map((data) => data.value);
 
+    // segment of filtered record 
     const segmentDataFlt = filtered.values.slice(segmParam.at, segmParam.at + segmParam.length);
-    console.log("segmentDataFlt:", segmentDataFlt)
     const idxVisualArrayFlt = segmentDataFlt.map((data) => data.idx);
     const valueVisualArrayFlt = segmentDataFlt.map((data) => data.value);
 
+    // edited rpeaks of original record
     const idxVisualRpeaks = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.sampleIndex - segmParam.at);
-    console.log('idxVisualRpeaks:', idxVisualRpeaks);
-  
     const annotationVisualValues = annot_js.rpeaks.filter((rpeak) => rpeak.sampleIndex >= segmParam.at && rpeak.sampleIndex < segmParam.at + segmParam.length)
     .map((rpeak) => rpeak.annotationValue);
-    console.log('annotationVisualValues:', annotationVisualValues);
 
-    const noiseVisualAnnotations = [];
+    // noise annotations of original record 
+    // const noiseVisualAnnotations = []; - užblokuotas
+    const noiseVisualAnnotations = noiseAnnotations(annot_js.noises, segmParam.at, segmParam.length);
 
+    //chart.js data & options
     const {data, options} = generateChartConfig(idxVisualArray, valueVisualArray, idxVisualRpeaks,
            annotationVisualValues, noiseVisualAnnotations);
     const {data: data_flt, options: options_flt} = generateChartConfig(idxVisualArrayFlt, valueVisualArrayFlt, idxVisualRpeaks,
            annotationVisualValues,noiseVisualAnnotations);
+    
     // options_flt.scales.x.ticks.display = true;
     options_flt.scales.x.ticks.display = false;
 
@@ -156,7 +152,7 @@ const FiltrationShow = () => {
           </label>
 
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Failo vardas: {segmParam.fname}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Reikšmių: {filtered.values.length} 
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Viršuje po filtro: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}Hz
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Viršuje po filtro: {filtered.flt_param.type} &nbsp;&nbsp;{filtered.flt_param.lowcut}nbsp;Hz
           <ShowGraph data={data_flt} options={options_flt} width={1200} height={300} />
           <ShowGraph data={data} options={options} width={1200} height={300} />
       
