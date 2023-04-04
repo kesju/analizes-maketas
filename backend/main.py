@@ -47,9 +47,12 @@ pd.set_option('display.width', 1000)
 
 # Vietinės talpyklos aplankas
 # db_folder = 'DUOM_2022_RUDUO_2'
-db_folder = 'DUOMENU_TVARKYMAS_2023'
+# db_folder = 'DUOMENU_TVARKYMAS_2023'
+db_folder = 'MAKETAS'
+
 # Duomenų aplankas
-rec_folder = 'ATRINKTI_DUOMENYS'
+# rec_folder = 'ATRINKTI_DUOMENYS'
+rec_folder = 'data'
 
 # Analizės rezultatų aplankas
 rsl_folder = 'results'
@@ -72,7 +75,7 @@ db_path = Path(Duomenu_aplankas, db_folder, rec_folder)
 print( 'Duomenų aplankas:', db_path)
 
 rsl_path = Path(Duomenu_aplankas, db_folder, rsl_folder) 
-print( 'Duomenų aplankas:', rsl_path)
+print( 'Rezultatų aplankas:', rsl_path)
 
 df_list = get_list(db_path)
 if (not df_list.empty):
