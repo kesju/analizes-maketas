@@ -12,7 +12,7 @@ from neurokit2 import signal_filter
 import numpy as np
 
 import json
-from util_list import collect_list, get_list, zive_read_file_1ch, AnalyseHeartrate, read_json_file
+from util_list import collect_list, get_list, read_signal, AnalyseHeartrate, read_json_file
 
 
 my_os=sys.platform
@@ -47,10 +47,9 @@ pd.set_option('display.width', 1000)
 
 # Vietinės talpyklos aplankas
 # db_folder = 'DUOM_2022_RUDUO_2'
-db_folder = 'MAKETAS'
-
+db_folder = 'DUOMENU_TVARKYMAS_2023'
 # Duomenų aplankas
-rec_folder = 'data'
+rec_folder = 'ATRINKTI_DUOMENYS'
 
 # Analizės rezultatų aplankas
 rsl_folder = 'results'
@@ -194,8 +193,9 @@ class ItemValue(BaseModel):
 # @app.get("/values/", response_model=List[ItemValue])
 @app.get("/values/")
 async def return_props3(fname: str = "1626931.201", at: int = 0, length: int = 10):
- fpath = Path(db_path, fname)   
- arr = zive_read_file_1ch(fpath)
+#  fpath = Path(db_path, fname)   
+#  arr = zive_read_file_1ch(fpath)
+ arr = read_signal(db_path, fname)
  length_arr = len(arr)
  print("fname:", fname)
  until = at + length
@@ -215,11 +215,13 @@ async def return_props3(fname: str = "1626931.201", at: int = 0, length: int = 1
 # @app.get("/record/", response_model=List[ItemValue])
 @app.get("/record/")
 async def return_props3(fname: str = "1626931.201"):
- fpath = Path(db_path, fname)   
- arr = zive_read_file_1ch(fpath)
+#  fpath = Path(db_path, fname)
+#  arr = zive_read_file_1ch(fpath)
+ arr = read_signal(db_path, fname)
  length_arr = len(arr)
  print("fname:", fname)
  list = [{'idx':i,'value':arr[i]} for i in range(0, length_arr-1)]
+ fpath = Path(db_path, fname)
  print("fpath:", fpath)
  print("length:", len(list))
  return(list)
@@ -243,8 +245,9 @@ async def return_props3(fname: str = "1626931.201"):
 # @app.get("/filtered/", response_model=List[ItemValue])
 @app.get("/filtered/")
 async def return_props3(fname: str = "1626931.201"):
- fpath = Path(db_path, fname)   
- arr = zive_read_file_1ch(fpath)
+#  fpath = Path(db_path, fname)   
+#  arr = zive_read_file_1ch(fpath)
+ arr = read_signal(db_path, fname)
  length_arr = len(arr)
 
  print(f"\nIšlyginta izolinija su {fp['method']}")
@@ -300,8 +303,9 @@ async def return_json(fname: str = "1626931.201"):
 # endpoint nr. 6.1 uždavus failo vardą fname atiduoda EKG rpeaks (rpeaks), gautus su Neurokit 
 @app.get("/nk_rpeaks/")
 async def return_props3(fname: str = "1642627.410"):
- fpath = Path(db_path, fname)   
- signal_raw = zive_read_file_1ch(fpath)
+#  fpath = Path(db_path, fname)   
+#  signal_raw = zive_read_file_1ch(fpath)
+ signal_raw = read_signal(db_path, fname)
 
 # Variantas su filtravimu - užblokuotas
 # signal = signal_filter(signal=signal_raw, sampling_rate=200, lowcut=0.5, method="butterworth", order=5)

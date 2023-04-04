@@ -22,6 +22,34 @@ def runtime(s):
     minutes, seconds = divmod(remainder, 60)
     print('Runtime: {:02}:{:02}:{:02}'.format(int(hours), int(minutes), int(seconds)))
 
+def read_signal(rec_dir, filename):
+    """
+    Tinka EKG įrašų skaitymui tiek zive, tiek mit2zive atveju.
+    zive atveju filename pvz. 1621694.321, 1621694.321.json
+    mit2zive atveju, pvz. 100.000, 100.000.json - dalis iki taško ne ilgesnė
+    už 4 simbolius
+
+    Parameters
+    ------------
+        rec_dir: string
+        filename: string
+    Return
+    -----------
+        signl: numpy array, float
+    """   
+    file_path = Path(filename)
+    name = file_path.stem
+    file_path = Path(rec_dir, filename)
+    
+    if len(name) < 7:
+        with open(file_path, "rb") as f:
+            signl_loaded = np.load(f) 
+        return signl_loaded
+    else:        
+        signl_loaded = zive_read_file_1ch(file_path)
+        return signl_loaded
+
+
 def zive_read_file_1ch(filename):
     f = open(filename, "r")
     a = np.fromfile(f, dtype=np.dtype('>i4'))
@@ -137,7 +165,7 @@ def collect_list(db_path):
         'flag': int,
         'comment': str }
 
-    file_path = Path(db_path, 'comments.csv')
+    file_path = Path(db_path, 'comments_new.csv')
     if (file_path.exists()):
         print("ieškome comments.csv")
         df_comments = pd.read_csv(file_path, dtype=dtypes)
