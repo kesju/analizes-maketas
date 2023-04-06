@@ -6,14 +6,42 @@ import numpy as np
 import pandas as pd
 import json
 import neurokit2 as nk
+
 from pathlib import Path # dedant į Zive - išmesti
 # Taip pat yra užblokuota klasterizacija - Užblokuota laikinai
-
 
 from quality_analysis import EstimateQuality
 from heartrate_analysis import AnalyseHeartrate, DelineateQRS
 from zive_cnn_fda_vu_v2_su_cluster import classify_clusterise_cnn_fda_vu_v1, zive_read_file_1ch, zive_read_file_3ch
 from runs import EctopicRunsAnalysis
+
+# read_signal įdėta laikinai, reikalinga maketui 
+def read_signal_modif(filename):
+    """
+    Tinka EKG įrašų skaitymui tiek zive, tiek mit2zive atveju.
+    zive atveju filename pvz. 1621694.321, 1621694.321.json
+    mit2zive atveju, pvz. 100.000, 100.000.json - dalis iki taško ne ilgesnė
+    už 4 simbolius
+
+    Parameters
+    ------------
+        file_path: string 
+    Return
+    -----------
+        signl: numpy array, float
+    """   
+    file_path = Path(filename)
+    name = file_path.stem
+    
+    if len(name) < 7:
+        with open(file_path, "rb") as f:
+            signl_loaded = np.load(f) 
+        return signl_loaded
+    else:        
+        signl_loaded = zive_read_file_1ch(file_path)
+        return signl_loaded
+
+
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -62,12 +90,19 @@ def EmptyAnalysisResults():
   return analysis_results
 
 hr_analysis_success = True
-try:  
-  if args.channelCount == 3:
-    ecg_signal_df = pd.DataFrame(zive_read_file_3ch(args.fileName), columns=['orig'])
-  elif args.channelCount == 1:
-    ecg_signal_df = pd.DataFrame(zive_read_file_1ch(args.fileName), columns=['orig'])
+try:
+  # Zive skaitymo funkcija užblokuojama, makete pakeista į įrašo skaitymo funkciją
+  # read_signal_modif, kuri tinka it mit2zive įrašams 
+  # 
+  # if args.channelCount == 3:
+  #   ecg_signal_df = pd.DataFrame(zive_read_file_3ch(args.fileName), columns=['orig'])
+  # elif args.channelCount == 1:
+  #   ecg_signal_df = pd.DataFrame(zive_read_file_1ch(args.fileName), columns=['orig'])
 
+  # Pakeista į:
+  signal = read_signal_modif(args.fileName)
+  ecg_signal_df = pd.DataFrame(signal, columns=['orig'])
+   
   if not args.rpeakSampleIndexes and not args.rpeaksOnly:
     quality = EstimateQuality(ecg_signal_df, method="variance")
     results['quality'] = quality
@@ -115,8 +150,11 @@ try:
     results['tpeaks'] = None
 
   if rpeaks and not args.rpeaksOnly:
-    model_dir='analysis/model_cnn_fda_vu_v1' # laikinai - dedant į Zive analysis nereikalingas
-    classification, clusterization = classify_clusterise_cnn_fda_vu_v1(zive_read_file_1ch(args.fileName), rpeaks=rpeaks, 
+    model_dir='analysis/model_cnn_fda_vu_v1' # laikinai - dedant į Zive aplankas 'analysis' nereikalingas
+    # Taip pat pakeičiu kreipinyje classify_clusterise_cnn_fda_vu_v1 failo nuskaitymą
+    # classification, clusterization = classify_clusterise_cnn_fda_vu_v1(zive_read_file_1ch(args.fileName), rpeaks=rpeaks, 
+    #                                               model_dir=model_dir, prediction_labels=['N', 'S', 'V', 'U'])
+    classification, clusterization = classify_clusterise_cnn_fda_vu_v1(signal, rpeaks=rpeaks, 
                                                   model_dir=model_dir, prediction_labels=['N', 'S', 'V', 'U'])
     results['automatic_classification'] = classification
     # results['automatic_clusterization'] = clusterization # Užblokuota laikinai
@@ -143,7 +181,7 @@ rsl_parent = rsl_path.parent
 
 rsl_filename = rsl_path.name + '_rsl.json'
 rsl_path = Path(rsl_parent, rsl_filename)
-print(rsl_path)
+# print(rsl_path)
 
 with open(rsl_path, 'w') as f:
     # Write the dictionary to the file as a JSON object
